@@ -81,9 +81,12 @@ export default function FogMachineView({ updateStats }) {
 
   const endSession = () => {
     setIsRunning(false);
+    const minutesSpent = Math.floor(timeInFog / 60);
     updateStats((prev) => ({
       ...prev,
-      fogMinutes: prev.fogMinutes + Math.floor(timeInFog / 60),
+      fogMinutes: prev.fogMinutes + minutesSpent,
+      totalSessions: prev.totalSessions + 1,
+      lastSessionDate: new Date().toISOString().split('T')[0],
     }));
     setSessionActive(false);
     setCurrentContent(null);

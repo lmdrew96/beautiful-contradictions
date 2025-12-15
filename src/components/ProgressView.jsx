@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Flower2, Shuffle, CloudFog, Trash2, Award } from 'lucide-react';
+import { BarChart3, Flower2, Shuffle, CloudFog, Hammer, Trash2, Award, BookOpen } from 'lucide-react';
 
 export default function ProgressView({ stats, errors, setErrors }) {
   const clearErrorGarden = () => {
@@ -13,7 +13,7 @@ export default function ProgressView({ stats, errors, setErrors }) {
   };
 
   // Calculate some derived stats
-  const totalMinutes = stats.chaosMinutes + stats.fogMinutes;
+  const totalMinutes = stats.chaosMinutes + stats.fogMinutes + (stats.gardenMinutes || 0) + (stats.forgeMinutes || 0);
   const avgErrorCount = errors.length > 0
     ? (errors.reduce((sum, e) => sum + e.wrongCount, 0) / errors.length).toFixed(1)
     : 0;
@@ -36,38 +36,65 @@ export default function ProgressView({ stats, errors, setErrors }) {
             icon={Shuffle}
             value={stats.chaosMinutes}
             label="Chaos Minutes"
-            gradient="from-purple-900/50 to-indigo-900/50"
-            borderColor="border-purple-800/50"
-            textColor="text-purple-400"
+            gradient="from-bg-secondary to-bg-tertiary"
+            borderColor="border-border"
+            textColor="text-chaos-accent"
           />
           <StatCard
             icon={Flower2}
-            value={errors.length}
-            label="Words in Garden"
-            gradient="from-rose-900/50 to-orange-900/50"
-            borderColor="border-rose-800/50"
-            textColor="text-rose-400"
+            value={stats.gardenMinutes || 0}
+            label="Garden Minutes"
+            gradient="from-bg-secondary to-bg-tertiary"
+            borderColor="border-border"
+            textColor="text-garden-accent"
           />
           <StatCard
             icon={CloudFog}
             value={stats.fogMinutes}
             label="Fog Minutes"
-            gradient="from-teal-900/50 to-cyan-900/50"
-            borderColor="border-teal-800/50"
-            textColor="text-teal-400"
-          />
-          <StatCard
-            icon={Award}
-            value={stats.totalSessions}
-            label="Total Sessions"
             gradient="from-bg-secondary to-bg-tertiary"
             borderColor="border-border"
-            textColor="text-text-primary"
+            textColor="text-fog-accent"
+          />
+          <StatCard
+            icon={Hammer}
+            value={stats.forgeMinutes || 0}
+            label="Forge Minutes"
+            gradient="from-bg-secondary to-bg-tertiary"
+            borderColor="border-border"
+            textColor="text-forge-accent"
           />
         </div>
 
+        {/* Learning Stats */}
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">Learning Stats</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-text-muted">Words Reviewed</p>
+              <p className="text-2xl font-bold text-text-primary">{stats.wordsReviewed || 0}</p>
+            </div>
+            <div>
+              <p className="text-text-muted">Sentences Reviewed</p>
+              <p className="text-2xl font-bold text-text-primary">{stats.sentencesReviewed || 0}</p>
+            </div>
+            <div>
+              <p className="text-text-muted">Accuracy</p>
+              <p className="text-2xl font-bold text-success">
+                {(stats.wordsReviewed || 0) + (stats.sentencesReviewed || 0) > 0
+                  ? Math.round((stats.correctGuesses || 0) / ((stats.wordsReviewed || 0) + (stats.sentencesReviewed || 0)) * 100)
+                  : 0}%
+              </p>
+            </div>
+            <div>
+              <p className="text-text-muted">Total Sessions</p>
+              <p className="text-2xl font-bold text-accent">{stats.totalSessions}</p>
+            </div>
+          </div>
+        </div>
+
         {/* Summary Card */}
-        <div className="bg-gradient-to-r from-purple-900/20 via-pink-900/20 to-orange-900/20 rounded-2xl p-6 border border-purple-800/30 mb-6">
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
           <h3 className="text-lg font-semibold text-text-primary mb-4">Summary</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -76,15 +103,15 @@ export default function ProgressView({ stats, errors, setErrors }) {
             </div>
             <div>
               <p className="text-text-muted">Garden Size</p>
-              <p className="text-2xl font-bold text-rose-400">{errors.length} words</p>
+              <p className="text-2xl font-bold text-error">{errors.length} words</p>
             </div>
             <div>
               <p className="text-text-muted">Avg. Difficulty</p>
-              <p className="text-2xl font-bold text-teal-400">x{avgErrorCount}</p>
+              <p className="text-2xl font-bold text-success">x{avgErrorCount}</p>
             </div>
             <div>
               <p className="text-text-muted">Sessions</p>
-              <p className="text-2xl font-bold text-purple-400">{stats.totalSessions}</p>
+              <p className="text-2xl font-bold text-accent">{stats.totalSessions}</p>
             </div>
           </div>
         </div>

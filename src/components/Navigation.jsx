@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Shuffle, Flower2, CloudFog, BarChart3, Settings } from 'lucide-react';
+import { Home, Shuffle, Flower2, CloudFog, Hammer, BarChart3, Settings } from 'lucide-react';
 import ProfileMenu from './ProfileMenu';
 import SettingsModal from './SettingsModal';
 
@@ -8,6 +8,7 @@ const navItems = [
   { id: 'chaos', label: 'Chaos', icon: Shuffle },
   { id: 'garden', label: 'Garden', icon: Flower2 },
   { id: 'fog', label: 'Fog', icon: CloudFog },
+  { id: 'forge', label: 'Forge', icon: Hammer },
   { id: 'progress', label: 'Progress', icon: BarChart3 },
 ];
 

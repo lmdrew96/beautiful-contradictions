@@ -41,7 +41,16 @@ export default {
         fog: {
           teal: '#14B8A6',
           cyan: '#06B6D4',
-        }
+        },
+        // Theme-aware feature accents
+        'chaos-accent': 'var(--chaos-accent)',
+        'chaos-accent-soft': 'var(--chaos-accent-soft)',
+        'garden-accent': 'var(--garden-accent)',
+        'garden-accent-soft': 'var(--garden-accent-soft)',
+        'fog-accent': 'var(--fog-accent)',
+        'fog-accent-soft': 'var(--fog-accent-soft)',
+        'forge-accent': 'var(--forge-accent)',
+        'forge-accent-soft': 'var(--forge-accent-soft)',
       },
       animation: {
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',

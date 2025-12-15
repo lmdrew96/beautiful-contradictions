@@ -89,12 +89,14 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [cardsReviewed, setCardsReviewed] = useState(0);
   const [streak, setStreak] = useState(0);
   const [mode, setMode] = useState('words'); // 'words' | 'sentences'
+  const [sessionStartTime, setSessionStartTime] = useState(null);
   const inputRef = useRef(null);
 
   const startSession = () => {
     setSessionActive(true);
     setCardsReviewed(0);
     setStreak(0);
+    setSessionStartTime(Date.now());
     nextCard();
   };
 
@@ -140,6 +142,11 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
 
     if (correct) {
       setStreak((s) => s + 1);
+      // Track correct guesses for accuracy stats
+      updateStats((prev) => ({
+        ...prev,
+        correctGuesses: (prev.correctGuesses || 0) + 1,
+      }));
       // Remove from errors if it exists there (only for words mode)
       if (mode === 'words') {
         setErrors((prev) => prev.filter((e) => e.ro !== currentCard.ro));
@@ -176,8 +183,22 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   };
 
   const endSession = () => {
+    const sessionMinutes = sessionStartTime
+      ? Math.floor((Date.now() - sessionStartTime) / 60000)
+      : 0;
+
+    updateStats((prev) => ({
+      ...prev,
+      gardenMinutes: (prev.gardenMinutes || 0) + sessionMinutes,
+      totalSessions: prev.totalSessions + 1,
+      wordsReviewed: (prev.wordsReviewed || 0) + (mode === 'words' ? cardsReviewed : 0),
+      sentencesReviewed: (prev.sentencesReviewed || 0) + (mode === 'sentences' ? cardsReviewed : 0),
+      lastSessionDate: new Date().toISOString().split('T')[0],
+    }));
+
     setSessionActive(false);
     setCurrentCard(null);
+    setSessionStartTime(null);
   };
 
   // ============================================

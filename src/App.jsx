@@ -3,6 +3,7 @@ import { useLocalStorage } from './hooks/useStorage';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 
 // Components
 import Navigation from './components/Navigation';
@@ -10,15 +11,23 @@ import HomeView from './components/HomeView';
 import ChaosEngine from './components/ChaosEngine';
 import ErrorGarden from './components/ErrorGarden';
 import FogMachine from './components/FogMachine';
+import WordForge from './components/WordForge';
 import ProgressView from './components/ProgressView';
 import AuthModal from './components/AuthModal';
 
 // Initial stats structure
 const INITIAL_STATS = {
   chaosMinutes: 0,
-  errorsHarvested: 0, // Kept for backward compatibility
   fogMinutes: 0,
+  gardenMinutes: 0,
+  forgeMinutes: 0,
   totalSessions: 0,
+  wordsReviewed: 0,
+  sentencesReviewed: 0,
+  correctGuesses: 0,
+  currentStreak: 0,
+  longestStreak: 0,
+  lastSessionDate: null,
 };
 
 // One-time migration from bc-* to cl-* localStorage keys
@@ -90,6 +99,12 @@ function AppContent() {
             updateStats={setStats}
           />
         );
+      case 'forge':
+        return (
+          <WordForge
+            updateStats={setStats}
+          />
+        );
       case 'progress':
         return (
           <ProgressView
@@ -135,9 +150,11 @@ function AppContent() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <SettingsProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </SettingsProvider>
     </ThemeProvider>
   );
 }

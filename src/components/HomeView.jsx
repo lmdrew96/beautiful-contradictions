@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Shuffle, Flower2, CloudFog, Sparkles, ChevronRight } from 'lucide-react';
+import { Shuffle, Flower2, CloudFog, Hammer, Sparkles, ChevronRight } from 'lucide-react';
 
 const mantras = [
   "The mess is the method.",
@@ -55,21 +55,26 @@ export default function HomeView({ setCurrentView, stats }) {
 
       {/* Quick Stats */}
       <div className="px-6 py-6">
-        <div className="grid grid-cols-3 gap-3 max-w-lg mx-auto">
+        <div className="grid grid-cols-4 gap-3 max-w-lg mx-auto">
           <StatCard
             value={stats.chaosMinutes}
             label="Chaos"
             color="purple"
           />
           <StatCard
-            value={stats.errorsHarvested}
-            label="Errors"
+            value={stats.gardenMinutes || 0}
+            label="Garden"
             color="rose"
           />
           <StatCard
             value={stats.fogMinutes}
             label="Fog"
             color="teal"
+          />
+          <StatCard
+            value={stats.forgeMinutes || 0}
+            label="Forge"
+            color="amber"
           />
         </div>
       </div>
@@ -106,6 +111,15 @@ export default function HomeView({ setCurrentView, stats }) {
           bgColor="#0d9488"
           onClick={() => setCurrentView('fog')}
         />
+
+        <SessionCard
+          icon={Hammer}
+          title="Word Forge"
+          description="Build sentences, active production"
+          gradient="from-amber-600 to-orange-600"
+          bgColor="#d97706"
+          onClick={() => setCurrentView('forge')}
+        />
       </div>
 
       {/* Philosophy Section */}
@@ -128,6 +142,11 @@ export default function HomeView({ setCurrentView, stats }) {
               title="Knowing Through Not-Knowing"
               description="Confusion is understanding in progress"
             />
+            <PhilosophyItem
+              color="amber"
+              title="Forged Through Production"
+              description="Speaking strengthens what listening started"
+            />
           </div>
         </div>
       </div>
@@ -140,11 +159,13 @@ function StatCard({ value, label, color }) {
     purple: 'from-purple-100 to-indigo-100 dark:from-purple-900/50 dark:to-indigo-900/50 border-purple-300 dark:border-purple-800/50',
     rose: 'from-rose-100 to-orange-100 dark:from-rose-900/50 dark:to-orange-900/50 border-rose-300 dark:border-rose-800/50',
     teal: 'from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 border-teal-300 dark:border-teal-800/50',
+    amber: 'from-amber-100 to-orange-100 dark:from-amber-900/50 dark:to-orange-900/50 border-amber-300 dark:border-amber-800/50',
   };
   const textClasses = {
     purple: 'text-purple-600 dark:text-purple-400',
     rose: 'text-rose-600 dark:text-rose-400',
     teal: 'text-teal-600 dark:text-teal-400',
+    amber: 'text-amber-600 dark:text-amber-400',
   };
 
   return (
@@ -188,6 +209,7 @@ function PhilosophyItem({ color, title, description }) {
     purple: 'text-purple-600 dark:text-purple-400',
     rose: 'text-rose-600 dark:text-rose-400',
     teal: 'text-teal-600 dark:text-teal-400',
+    amber: 'text-amber-600 dark:text-amber-400',
   };
 
   return (

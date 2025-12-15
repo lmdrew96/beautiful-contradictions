@@ -21,6 +21,8 @@ import {
   ChevronUp,
 } from 'lucide-react';
 import { getDifficultyLabel, getDifficultyColor } from '../utils/difficulty';
+import { useSettings } from '../contexts/SettingsContext';
+import { getDisplayAmount } from '../utils/unitConversion';
 
 function RecipeCard({ recipe, compact = false }) {
   const [showEnglish, setShowEnglish] = useState(false);
@@ -28,6 +30,11 @@ function RecipeCard({ recipe, compact = false }) {
     ingredients: true,
     steps: !compact,
   });
+  const { settings } = useSettings();
+
+  // Determine if we should show imperial units
+  const useImperial = settings.unitSystem === 'imperial' ||
+    (settings.autoImperialWithEnglish && showEnglish);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -140,7 +147,9 @@ function RecipeCard({ recipe, compact = false }) {
               <li key={index} className="flex items-start gap-2 text-text-secondary">
                 <span className="text-warning mt-1">-</span>
                 <span>
-                  <span className="font-medium">{ing.amount}</span>
+                  <span className="font-medium">
+                    {getDisplayAmount(ing.amount, useImperial)}
+                  </span>
                   {' '}
                   {showEnglish ? ing.en : ing.ro}
                   {!showEnglish && ing.en && (
