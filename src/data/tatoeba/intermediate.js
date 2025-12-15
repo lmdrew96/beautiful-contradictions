@@ -13,7 +13,7 @@ export const TATOEBA_INTERMEDIATE = [
   { id: 'tat-104', romanian: 'Ce profesie ai?', english: 'What is your profession?', difficulty: 4, wordCount: 3, hasAudio: false, audioUrl: null },
   { id: 'tat-105', romanian: 'Imi poti recomanda un restaurant bun?', english: 'Can you recommend a good restaurant?', difficulty: 4, wordCount: 5, hasAudio: false, audioUrl: null },
   { id: 'tat-106', romanian: 'Aceasta camera este libera?', english: 'Is this room available?', difficulty: 4, wordCount: 4, hasAudio: false, audioUrl: null },
-  { id: 'tat-107', romanian: 'La ce ora se deschide magazinul?', english: 'What time does the store open?', difficulty: 4, wordCount: 6, hasAudio: false, audioUrl: null },
+  { id: 'tat-107', romanian: 'La ce ora se deschide magazinul?', english: 'What time does the store open?', difficulty: 4, wordCount: 6, hasAudio: true, audioUrl: 'https://audio.tatoeba.org/sentences/ron/1153775.mp3' },
   { id: 'tat-108', romanian: 'Cat timp dureaza calatoria?', english: 'How long does the journey take?', difficulty: 4, wordCount: 4, hasAudio: false, audioUrl: null },
   { id: 'tat-109', romanian: 'Aveti meniu in engleza?', english: 'Do you have a menu in English?', difficulty: 4, wordCount: 4, hasAudio: false, audioUrl: null },
   { id: 'tat-110', romanian: 'Am nevoie de o camera pentru doua nopti.', english: 'I need a room for two nights.', difficulty: 4, wordCount: 7, hasAudio: false, audioUrl: null },
