@@ -16,7 +16,7 @@ export default function Navigation({ currentView, setCurrentView, syncStatus, on
 
   return (
     <>
-      <nav className="fixed bottom-0 left-0 right-0 bg-bg-secondary/95 backdrop-blur-lg border-t border-border z-50 md:top-0 md:bottom-auto md:border-t-0 md:border-b safe-area-bottom">
+      <nav className="fixed bottom-0 left-0 right-0 bg-bg-secondary border-t border-border z-50 md:top-0 md:bottom-auto md:border-t-0 md:border-b safe-area-bottom">
         <div className="max-w-4xl mx-auto px-2 md:px-4">
           <div className="flex items-center justify-between py-2">
             {/* Nav Items */}

@@ -19,9 +19,18 @@ export default function HomeView({ setCurrentView, stats }) {
   return (
     <div className="min-h-screen pb-24 md:pt-20">
       {/* Hero Section */}
-      <div>
+      <div className="relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/40 via-transparent to-pink-200/30 dark:from-purple-900/40 dark:via-transparent dark:to-pink-900/20" />
+
+        {/* Floating orbs - decorative */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-purple-300/20 dark:bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-10 right-10 w-48 h-48 bg-pink-300/20 dark:bg-pink-500/30 rounded-full blur-3xl animate-pulse" />
+        </div>
+
         {/* Hero content */}
-        <div className="px-6 py-16 md:py-24 text-center">
+        <div className="relative px-6 py-16 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full border border-purple-500/30 mb-6">
             <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
             <span className="text-xs text-purple-600 dark:text-purple-300 font-medium">Learn Romanian Differently</span>
@@ -76,6 +85,7 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Chaos Window"
           description="Random content, timed exploration"
           gradient="from-purple-600 to-indigo-700"
+          bgColor="#7c3aed"
           onClick={() => setCurrentView('chaos')}
         />
 
@@ -84,6 +94,7 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Error Garden"
           description="Guess first, learn from mistakes"
           gradient="from-rose-600 to-orange-600"
+          bgColor="#e11d48"
           onClick={() => setCurrentView('garden')}
         />
 
@@ -92,6 +103,7 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Fog Machine"
           description="Above-level immersion"
           gradient="from-teal-600 to-cyan-600"
+          bgColor="#0d9488"
           onClick={() => setCurrentView('fog')}
         />
       </div>
@@ -145,10 +157,11 @@ function StatCard({ value, label, color }) {
   );
 }
 
-function SessionCard({ icon: Icon, title, description, gradient, onClick }) {
+function SessionCard({ icon: Icon, title, description, gradient, bgColor, onClick }) {
   return (
     <button
       onClick={onClick}
+      style={{ backgroundColor: bgColor }}
       className={`w-full p-5 rounded-2xl bg-gradient-to-br ${gradient} text-left
         hover:scale-[1.02] hover:shadow-xl transition-all duration-200
         active:scale-[0.98] group`}

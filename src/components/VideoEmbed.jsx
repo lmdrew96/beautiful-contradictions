@@ -114,7 +114,7 @@ export default function VideoEmbed({
 
       {/* Fallback message - shows after timeout */}
       {showFallback && watchUrl && (
-        <div className="absolute bottom-0 left-0 right-0 bg-bg-primary/95 p-4">
+        <div className="absolute bottom-0 left-0 right-0 bg-bg-primary p-4 border-t border-border">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-text-muted text-sm">
               <AlertCircle size={16} />
