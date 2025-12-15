@@ -14,8 +14,8 @@ export default function ProgressView({ stats, errors, setErrors }) {
 
   // Calculate some derived stats
   const totalMinutes = stats.chaosMinutes + stats.fogMinutes + (stats.gardenMinutes || 0) + (stats.forgeMinutes || 0);
-  const avgErrorCount = errors.length > 0
-    ? (errors.reduce((sum, e) => sum + e.wrongCount, 0) / errors.length).toFixed(1)
+  const avgDifficulty = errors.length > 0
+    ? (errors.reduce((sum, e) => sum + (e.difficulty || 1), 0) / errors.length).toFixed(1)
     : 0;
 
   return (
@@ -107,7 +107,7 @@ export default function ProgressView({ stats, errors, setErrors }) {
             </div>
             <div>
               <p className="text-text-muted">Avg. Difficulty</p>
-              <p className="text-2xl font-bold text-success">x{avgErrorCount}</p>
+              <p className="text-2xl font-bold text-success">{avgDifficulty}/5</p>
             </div>
             <div>
               <p className="text-text-muted">Sessions</p>

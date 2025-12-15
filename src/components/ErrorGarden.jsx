@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare } from 'lucide-react';
+import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { getWeightedRandomVocab, VOCABULARY_DATABASE } from '../data/vocabulary';
 import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED } from '../data/tatoeba';
 
@@ -90,7 +90,12 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [streak, setStreak] = useState(0);
   const [mode, setMode] = useState('words'); // 'words' | 'sentences'
   const [sessionStartTime, setSessionStartTime] = useState(null);
+  const [showAllWords, setShowAllWords] = useState(false);
   const inputRef = useRef(null);
+
+  const removeError = (ro) => {
+    setErrors((prev) => prev.filter((e) => e.ro !== ro));
+  };
 
   const startSession = () => {
     setSessionActive(true);
@@ -225,27 +230,51 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             </div>
 
             {errors.length > 0 ? (
-              <div className="space-y-2 max-h-48 overflow-y-auto">
-                {errors
-                  .sort((a, b) => b.wrongCount - a.wrongCount)
-                  .slice(0, 5)
-                  .map((error, i) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-center bg-bg-secondary rounded-lg px-3 py-2"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-text-primary font-medium">{error.ro}</span>
-                        <span className="text-text-muted">-&gt;</span>
-                        <span className="text-text-secondary">{error.en}</span>
+              <div className="space-y-2">
+                <div className={`space-y-2 overflow-y-auto ${showAllWords ? 'max-h-80' : 'max-h-48'}`}>
+                  {errors
+                    .sort((a, b) => b.wrongCount - a.wrongCount)
+                    .slice(0, showAllWords ? errors.length : 5)
+                    .map((error, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-between items-center bg-bg-secondary rounded-lg px-3 py-2 group"
+                      >
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-text-primary font-medium">{error.ro}</span>
+                          <span className="text-text-muted">-&gt;</span>
+                          <span className="text-text-secondary truncate">{error.en}</span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-rose-600 dark:text-rose-400 text-sm font-medium">x{error.wrongCount}</span>
+                          <button
+                            onClick={() => removeError(error.ro)}
+                            className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-error transition-all p-1"
+                            title="Remove from garden"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </div>
-                      <span className="text-rose-600 dark:text-rose-400 text-sm font-medium">x{error.wrongCount}</span>
-                    </div>
-                  ))}
+                    ))}
+                </div>
                 {errors.length > 5 && (
-                  <p className="text-text-muted text-sm text-center pt-2">
-                    +{errors.length - 5} more in your garden
-                  </p>
+                  <button
+                    onClick={() => setShowAllWords(!showAllWords)}
+                    className="w-full flex items-center justify-center gap-1 text-text-muted hover:text-text-primary text-sm pt-2 transition-colors"
+                  >
+                    {showAllWords ? (
+                      <>
+                        <ChevronUp size={16} />
+                        Show less
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown size={16} />
+                        View all {errors.length} words
+                      </>
+                    )}
+                  </button>
                 )}
               </div>
             ) : (

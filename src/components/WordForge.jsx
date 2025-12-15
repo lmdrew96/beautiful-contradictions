@@ -67,6 +67,7 @@ export default function WordForge({ updateStats }) {
   const [completed, setCompleted] = useState(0);
   const [streak, setStreak] = useState(0);
   const [sessionStart, setSessionStart] = useState(null);
+  const [sessionCorrect, setSessionCorrect] = useState(0);
   const inputRef = useRef(null);
 
   const getNewChallenge = useCallback(() => {
@@ -107,6 +108,7 @@ export default function WordForge({ updateStats }) {
     setSessionActive(true);
     setCompleted(0);
     setStreak(0);
+    setSessionCorrect(0);
     setSessionStart(Date.now());
     nextChallenge();
   };
@@ -141,6 +143,7 @@ export default function WordForge({ updateStats }) {
     setCompleted(c => c + 1);
 
     if (correct) {
+      setSessionCorrect(c => c + 1);
       setStreak(s => s + 1);
     } else {
       setStreak(0);
@@ -179,6 +182,7 @@ export default function WordForge({ updateStats }) {
       forgeMinutes: (prev.forgeMinutes || 0) + sessionMinutes,
       totalSessions: prev.totalSessions + 1,
       sentencesReviewed: (prev.sentencesReviewed || 0) + completed,
+      correctGuesses: (prev.correctGuesses || 0) + sessionCorrect,
       lastSessionDate: new Date().toISOString().split('T')[0],
     }));
 
