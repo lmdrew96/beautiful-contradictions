@@ -56,8 +56,8 @@ function StoryReader({
           onClick={(e) => handleWordClick(word, e)}
           className={`
             cursor-pointer transition-colors duration-150
-            hover:bg-amber-500/30 hover:text-amber-200
-            ${isSelected ? 'bg-amber-500/40 text-amber-100 rounded px-0.5' : ''}
+            hover:bg-warning/30 hover:text-warning
+            ${isSelected ? 'bg-warning/40 text-warning rounded px-0.5' : ''}
           `}
         >
           {word}
@@ -70,16 +70,16 @@ function StoryReader({
   const difficultyLabel = getDifficultyLabel(story.difficulty);
 
   return (
-    <div className="bg-slate-800/50 rounded-xl p-6 max-w-3xl mx-auto">
+    <div className="bg-bg-secondary rounded-xl p-6 max-w-3xl mx-auto">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-1">
+            <h2 className="text-2xl font-bold text-text-primary mb-1">
               {story.title}
             </h2>
             {story.titleEn && (
-              <p className="text-slate-400 text-sm italic">
+              <p className="text-text-muted text-sm italic">
                 {story.titleEn}
               </p>
             )}
@@ -95,7 +95,7 @@ function StoryReader({
         </div>
 
         {/* Meta info */}
-        <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+        <div className="flex flex-wrap gap-4 text-sm text-text-muted">
           {story.author && (
             <span className="flex items-center gap-1.5">
               <User className="w-4 h-4" />
@@ -118,10 +118,10 @@ function StoryReader({
       </div>
 
       {/* Reading area */}
-      <div className="bg-slate-900/50 rounded-lg p-5 mb-4">
+      <div className="bg-bg-tertiary rounded-lg p-5 mb-4">
         <div className="prose prose-invert prose-lg max-w-none">
           {paragraphs.map((paragraph, index) => (
-            <p key={index} className="text-slate-200 leading-relaxed mb-4 last:mb-0">
+            <p key={index} className="text-text-secondary leading-relaxed mb-4 last:mb-0">
               {renderClickableText(paragraph)}
             </p>
           ))}
@@ -130,10 +130,10 @@ function StoryReader({
 
       {/* Selected word display */}
       {selectedWord && (
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-2 mb-4">
-          <span className="text-amber-300 text-sm">
-            Selected: <strong className="text-amber-100">{selectedWord}</strong>
-            <span className="text-slate-500 ml-2">(tap to look up in vocabulary)</span>
+        <div className="bg-warning/10 border border-warning/30 rounded-lg px-4 py-2 mb-4">
+          <span className="text-warning text-sm">
+            Selected: <strong>{selectedWord}</strong>
+            <span className="text-text-muted ml-2">(tap to look up in vocabulary)</span>
           </span>
         </div>
       )}
@@ -141,7 +141,7 @@ function StoryReader({
       {/* Translation toggle */}
       <button
         onClick={() => setShowTranslation(!showTranslation)}
-        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4"
+        className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors mb-4"
       >
         {showTranslation ? (
           <>
@@ -157,22 +157,22 @@ function StoryReader({
       </button>
 
       {showTranslation && story.titleEn && (
-        <div className="bg-slate-700/30 rounded-lg p-4 mb-4 text-slate-300 text-sm italic">
+        <div className="bg-bg-tertiary rounded-lg p-4 mb-4 text-text-secondary text-sm italic">
           This is an excerpt from "{story.titleEn}" by {story.author}.
           {story.era && ` (${story.era})`}
         </div>
       )}
 
       {/* Navigation */}
-      <div className="flex justify-between items-center pt-4 border-t border-slate-700">
+      <div className="flex justify-between items-center pt-4 border-t border-border">
         <button
           onClick={onPrevious}
           disabled={!hasPrevious}
           className={`
             flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
             ${hasPrevious
-              ? 'text-slate-300 hover:text-white hover:bg-slate-700'
-              : 'text-slate-600 cursor-not-allowed'
+              ? 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+              : 'text-text-muted cursor-not-allowed'
             }
           `}
         >
@@ -181,7 +181,7 @@ function StoryReader({
         </button>
 
         {/* Source attribution */}
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-text-muted">
           {story.source} ({story.license})
         </span>
 
@@ -191,8 +191,8 @@ function StoryReader({
           className={`
             flex items-center gap-2 px-4 py-2 rounded-lg transition-colors
             ${hasNext
-              ? 'text-slate-300 hover:text-white hover:bg-slate-700'
-              : 'text-slate-600 cursor-not-allowed'
+              ? 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+              : 'text-text-muted cursor-not-allowed'
             }
           `}
         >

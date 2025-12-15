@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocalStorage } from './hooks/useStorage';
 import { useSupabaseSync } from './hooks/useSupabaseSync';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Components
 import Navigation from './components/Navigation';
@@ -108,7 +109,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-bg-primary text-text-primary">
       {/* Navigation */}
       <Navigation
         currentView={currentView}
@@ -133,8 +134,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

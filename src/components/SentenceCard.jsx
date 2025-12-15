@@ -21,7 +21,7 @@ function SentenceCard({
 
   if (!sentence) {
     return (
-      <div className="bg-slate-800/50 rounded-xl p-6 text-center text-slate-400">
+      <div className="bg-bg-secondary rounded-xl p-6 text-center text-text-muted">
         No sentence available
       </div>
     );
@@ -45,9 +45,9 @@ function SentenceCard({
   };
 
   const getDifficultyColor = (diff) => {
-    if (diff <= 3) return 'bg-green-500/20 text-green-400';
-    if (diff <= 6) return 'bg-yellow-500/20 text-yellow-400';
-    return 'bg-red-500/20 text-red-400';
+    if (diff <= 3) return 'bg-success/20 text-success';
+    if (diff <= 6) return 'bg-warning/20 text-warning';
+    return 'bg-error/20 text-error';
   };
 
   const getDifficultyLabel = (diff) => {
@@ -58,14 +58,14 @@ function SentenceCard({
 
   if (compact) {
     return (
-      <div className="bg-slate-800/50 rounded-lg p-4">
-        <p className="text-lg text-white mb-2">{romanian}</p>
+      <div className="bg-bg-secondary rounded-lg p-4">
+        <p className="text-lg text-text-primary mb-2">{romanian}</p>
         {showTranslation && (
-          <p className="text-slate-400 text-sm">{english}</p>
+          <p className="text-text-muted text-sm">{english}</p>
         )}
         <button
           onClick={() => setShowTranslation(!showTranslation)}
-          className="text-purple-400 text-sm mt-2 hover:text-purple-300"
+          className="text-accent text-sm mt-2 hover:opacity-80"
         >
           {showTranslation ? 'Hide' : 'Show'} translation
         </button>
@@ -74,14 +74,14 @@ function SentenceCard({
   }
 
   return (
-    <div className="bg-slate-800/50 rounded-xl p-6 space-y-4">
+    <div className="bg-bg-secondary rounded-xl p-6 space-y-4">
       {/* Header with difficulty and word count */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={`px-2 py-1 rounded text-xs font-medium ${getDifficultyColor(difficulty)}`}>
             {getDifficultyLabel(difficulty)}
           </span>
-          <span className="text-slate-500 text-xs">
+          <span className="text-text-muted text-xs">
             {wordCount} {wordCount === 1 ? 'word' : 'words'}
           </span>
         </div>
@@ -93,8 +93,8 @@ function SentenceCard({
             disabled={isPlaying}
             className={`p-2 rounded-lg transition-colors ${
               isPlaying
-                ? 'bg-purple-500/30 text-purple-300 cursor-not-allowed'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white'
+                ? 'bg-accent/30 text-accent cursor-not-allowed'
+                : 'bg-bg-tertiary text-text-secondary hover:bg-bg-secondary hover:text-text-primary'
             }`}
             title="Play audio"
           >
@@ -105,19 +105,19 @@ function SentenceCard({
 
       {/* Romanian sentence */}
       <div className="py-4">
-        <p className="text-2xl text-white font-medium leading-relaxed">
+        <p className="text-2xl text-text-primary font-medium leading-relaxed">
           {romanian}
         </p>
       </div>
 
       {/* Translation section */}
-      <div className="border-t border-slate-700 pt-4">
+      <div className="border-t border-border pt-4">
         {showTranslation ? (
           <div className="space-y-3">
-            <p className="text-lg text-slate-300">{english}</p>
+            <p className="text-lg text-text-secondary">{english}</p>
             <button
               onClick={() => setShowTranslation(false)}
-              className="flex items-center gap-2 text-slate-400 hover:text-slate-300 text-sm"
+              className="flex items-center gap-2 text-text-muted hover:text-text-secondary text-sm"
             >
               <EyeOff className="w-4 h-4" />
               Hide translation
@@ -126,7 +126,7 @@ function SentenceCard({
         ) : (
           <button
             onClick={() => setShowTranslation(true)}
-            className="flex items-center gap-2 text-purple-400 hover:text-purple-300"
+            className="flex items-center gap-2 text-accent hover:opacity-80"
           >
             <Eye className="w-4 h-4" />
             Show translation
@@ -148,7 +148,7 @@ function SentenceCard({
       )}
 
       {/* Attribution */}
-      <p className="text-xs text-slate-500 text-center pt-2">
+      <p className="text-xs text-text-muted text-center pt-2">
         Source: Tatoeba.org (CC-BY 2.0)
       </p>
     </div>

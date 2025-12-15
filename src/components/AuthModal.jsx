@@ -51,21 +51,21 @@ export default function AuthModal({ isOpen, onClose }) {
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-md bg-slate-900 rounded-2xl border border-slate-700 shadow-2xl">
+      <div className="relative w-full max-w-md bg-bg-primary rounded-2xl border border-border shadow-2xl">
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
         >
           <X size={20} />
         </button>
 
         <div className="p-6">
           {/* Header */}
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
             {mode === 'signin' ? 'Welcome Back' : 'Create Account'}
           </h2>
-          <p className="text-slate-400 mb-6">
+          <p className="text-text-muted mb-6">
             {mode === 'signin'
               ? 'Sign in to sync your progress across devices'
               : 'Sign up to save your learning journey'}
@@ -87,13 +87,13 @@ export default function AuthModal({ isOpen, onClose }) {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Email
               </label>
               <div className="relative">
                 <Mail
                   size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
                 />
                 <input
                   type="email"
@@ -102,19 +102,19 @@ export default function AuthModal({ isOpen, onClose }) {
                   placeholder="you@example.com"
                   required
                   disabled={!isConfigured}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full pl-10 pr-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-text-secondary mb-2">
                 Password
               </label>
               <div className="relative">
                 <Lock
                   size={18}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
                 />
                 <input
                   type="password"
@@ -124,11 +124,11 @@ export default function AuthModal({ isOpen, onClose }) {
                   required
                   minLength={6}
                   disabled={!isConfigured}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full pl-10 pr-4 py-3 bg-bg-secondary border border-border rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-focus-ring focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
               {mode === 'signup' && (
-                <p className="text-slate-500 text-xs mt-1">
+                <p className="text-text-muted text-xs mt-1">
                   Must be at least 6 characters
                 </p>
               )}
@@ -168,11 +168,11 @@ export default function AuthModal({ isOpen, onClose }) {
 
           {/* Toggle mode */}
           <div className="mt-6 text-center">
-            <p className="text-slate-400 text-sm">
+            <p className="text-text-muted text-sm">
               {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
               <button
                 onClick={toggleMode}
-                className="text-purple-400 hover:text-purple-300 font-medium"
+                className="text-accent hover:opacity-80 font-medium"
               >
                 {mode === 'signin' ? 'Sign up' : 'Sign in'}
               </button>
@@ -183,7 +183,7 @@ export default function AuthModal({ isOpen, onClose }) {
           <div className="mt-4 text-center">
             <button
               onClick={onClose}
-              className="text-slate-500 hover:text-slate-400 text-sm"
+              className="text-text-muted hover:text-text-secondary text-sm"
             >
               Continue as guest
             </button>

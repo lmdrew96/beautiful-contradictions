@@ -11,8 +11,8 @@ const mantras = [
 ];
 
 export default function HomeView({ setCurrentView, stats }) {
-  const currentMantra = useMemo(() => 
-    mantras[Math.floor(Math.random() * mantras.length)], 
+  const currentMantra = useMemo(() =>
+    mantras[Math.floor(Math.random() * mantras.length)],
     []
   );
 
@@ -21,16 +21,16 @@ export default function HomeView({ setCurrentView, stats }) {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-slate-900 to-pink-900/20" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-bg-primary to-pink-900/20" />
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-10 left-10 w-64 h-64 bg-purple-500/30 rounded-full filter blur-3xl animate-pulse" />
-          <div 
-            className="absolute bottom-10 right-10 w-80 h-80 bg-pink-500/20 rounded-full filter blur-3xl animate-pulse" 
-            style={{ animationDelay: '1s' }} 
+          <div
+            className="absolute bottom-10 right-10 w-80 h-80 bg-pink-500/20 rounded-full filter blur-3xl animate-pulse"
+            style={{ animationDelay: '1s' }}
           />
-          <div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl animate-pulse" 
-            style={{ animationDelay: '2s' }} 
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl animate-pulse"
+            style={{ animationDelay: '2s' }}
           />
         </div>
 
@@ -40,19 +40,19 @@ export default function HomeView({ setCurrentView, stats }) {
             <Sparkles size={14} className="text-purple-400" />
             <span className="text-xs text-purple-300 font-medium">Learn Romanian Differently</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight">
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
               Chaos
             </span>
-            <span className="text-white">Lingua</span>
+            <span className="text-text-primary">Lingua</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-300 mb-3 max-w-md mx-auto">
+          <p className="text-lg md:text-xl text-text-secondary mb-3 max-w-md mx-auto">
             Structured chaos for language learning
           </p>
-          
-          <p className="text-slate-500 italic text-sm max-w-sm mx-auto">
+
+          <p className="text-text-muted italic text-sm max-w-sm mx-auto">
             "{currentMantra}"
           </p>
         </div>
@@ -61,27 +61,27 @@ export default function HomeView({ setCurrentView, stats }) {
       {/* Quick Stats */}
       <div className="px-6 py-6">
         <div className="grid grid-cols-3 gap-3 max-w-lg mx-auto">
-          <StatCard 
-            value={stats.chaosMinutes} 
-            label="Chaos" 
-            color="purple" 
+          <StatCard
+            value={stats.chaosMinutes}
+            label="Chaos"
+            color="purple"
           />
-          <StatCard 
-            value={stats.errorsHarvested} 
-            label="Errors" 
-            color="rose" 
+          <StatCard
+            value={stats.errorsHarvested}
+            label="Errors"
+            color="rose"
           />
-          <StatCard 
-            value={stats.fogMinutes} 
-            label="Fog" 
-            color="teal" 
+          <StatCard
+            value={stats.fogMinutes}
+            label="Fog"
+            color="teal"
           />
         </div>
       </div>
 
       {/* Session Cards */}
       <div className="px-6 space-y-4 max-w-lg mx-auto">
-        <h2 className="text-sm font-medium text-slate-400 uppercase tracking-wider">
+        <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider">
           Start Learning
         </h2>
 
@@ -112,8 +112,8 @@ export default function HomeView({ setCurrentView, stats }) {
 
       {/* Philosophy Section */}
       <div className="px-6 py-10 max-w-lg mx-auto">
-        <div className="bg-slate-800/30 rounded-2xl p-6 border border-slate-700/50">
-          <h3 className="text-lg font-semibold text-white mb-4">The Philosophy</h3>
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border">
+          <h3 className="text-lg font-semibold text-text-primary mb-4">The Philosophy</h3>
           <div className="space-y-4 text-sm">
             <PhilosophyItem
               color="purple"
@@ -149,7 +149,7 @@ function StatCard({ value, label, color }) {
       <div className={`text-2xl font-bold ${colorClasses[color].split(' ').pop()}`}>
         {value}
       </div>
-      <div className="text-xs text-slate-400">{label}</div>
+      <div className="text-xs text-text-muted">{label}</div>
     </div>
   );
 }
@@ -158,8 +158,8 @@ function SessionCard({ icon: Icon, title, description, gradient, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full p-5 rounded-2xl bg-gradient-to-br ${gradient} text-left 
-        hover:scale-[1.02] hover:shadow-xl transition-all duration-200 
+      className={`w-full p-5 rounded-2xl bg-gradient-to-br ${gradient} text-left
+        hover:scale-[1.02] hover:shadow-xl transition-all duration-200
         active:scale-[0.98] group`}
     >
       <div className="flex items-center gap-4">
@@ -170,9 +170,9 @@ function SessionCard({ icon: Icon, title, description, gradient, onClick }) {
           <h3 className="text-xl font-bold text-white">{title}</h3>
           <p className="text-white/70 text-sm">{description}</p>
         </div>
-        <ChevronRight 
-          size={20} 
-          className="text-white/50 group-hover:text-white/80 group-hover:translate-x-1 transition-all" 
+        <ChevronRight
+          size={20}
+          className="text-white/50 group-hover:text-white/80 group-hover:translate-x-1 transition-all"
         />
       </div>
     </button>
@@ -187,7 +187,7 @@ function PhilosophyItem({ color, title, description }) {
   };
 
   return (
-    <p className="text-slate-300">
+    <p className="text-text-secondary">
       <span className={`font-medium ${colorClasses[color]}`}>{title}:</span>{' '}
       {description}
     </p>

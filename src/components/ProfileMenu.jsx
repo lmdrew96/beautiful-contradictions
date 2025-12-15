@@ -27,11 +27,11 @@ export default function ProfileMenu({ syncStatus, onSignInClick }) {
   const getSyncIcon = () => {
     switch (syncStatus) {
       case 'syncing':
-        return <Loader2 size={12} className="animate-spin text-purple-400" />;
+        return <Loader2 size={12} className="animate-spin text-accent" />;
       case 'synced':
-        return <Check size={12} className="text-green-400" />;
+        return <Check size={12} className="text-success" />;
       case 'error':
-        return <CloudOff size={12} className="text-rose-400" />;
+        return <CloudOff size={12} className="text-error" />;
       default:
         return null;
     }
@@ -42,7 +42,7 @@ export default function ProfileMenu({ syncStatus, onSignInClick }) {
     return (
       <button
         onClick={onSignInClick}
-        className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition-colors text-sm"
+        className="flex items-center gap-2 px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm border border-border"
       >
         <User size={16} />
         <span className="hidden sm:inline">Sign In</span>
@@ -55,9 +55,9 @@ export default function ProfileMenu({ syncStatus, onSignInClick }) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 hover:text-white transition-colors text-sm"
+        className="flex items-center gap-2 px-3 py-1.5 bg-bg-secondary hover:bg-bg-tertiary rounded-lg text-text-secondary hover:text-text-primary transition-colors text-sm border border-border"
       >
-        <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+        <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-bold">
           {user.email?.[0]?.toUpperCase() || 'U'}
         </div>
         <span className="hidden sm:inline max-w-[120px] truncate">
@@ -68,20 +68,20 @@ export default function ProfileMenu({ syncStatus, onSignInClick }) {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden z-50">
+        <div className="absolute right-0 mt-2 w-64 bg-bg-secondary rounded-xl border border-border shadow-xl overflow-hidden z-50">
           {/* User Info */}
-          <div className="px-4 py-3 border-b border-slate-700">
-            <p className="text-sm font-medium text-white truncate">{user.email}</p>
+          <div className="px-4 py-3 border-b border-border">
+            <p className="text-sm font-medium text-text-primary truncate">{user.email}</p>
             <div className="flex items-center gap-2 mt-1">
               {isConfigured ? (
                 <>
-                  <Cloud size={12} className="text-green-400" />
-                  <span className="text-xs text-green-400">Cloud sync enabled</span>
+                  <Cloud size={12} className="text-success" />
+                  <span className="text-xs text-success">Cloud sync enabled</span>
                 </>
               ) : (
                 <>
-                  <CloudOff size={12} className="text-slate-500" />
-                  <span className="text-xs text-slate-500">Offline mode</span>
+                  <CloudOff size={12} className="text-text-muted" />
+                  <span className="text-xs text-text-muted">Offline mode</span>
                 </>
               )}
             </div>
@@ -89,10 +89,10 @@ export default function ProfileMenu({ syncStatus, onSignInClick }) {
 
           {/* Sync Status */}
           {syncStatus && (
-            <div className="px-4 py-2 border-b border-slate-700">
+            <div className="px-4 py-2 border-b border-border">
               <div className="flex items-center gap-2">
                 {getSyncIcon()}
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-text-muted">
                   {syncStatus === 'syncing' && 'Syncing...'}
                   {syncStatus === 'synced' && 'All changes saved'}
                   {syncStatus === 'error' && 'Sync error'}
@@ -106,7 +106,7 @@ export default function ProfileMenu({ syncStatus, onSignInClick }) {
           <div className="py-1">
             <button
               onClick={handleSignOut}
-              className="w-full px-4 py-2 text-left text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-2"
+              className="w-full px-4 py-2 text-left text-sm text-text-secondary hover:bg-bg-tertiary hover:text-text-primary transition-colors flex items-center gap-2"
             >
               <LogOut size={16} />
               Sign Out

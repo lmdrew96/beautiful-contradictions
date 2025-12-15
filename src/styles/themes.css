@@ -1,0 +1,374 @@
+/* ============================================
+   CHAOSLINGUA THEME SYSTEM
+   4 themes x 2 modes = 8 total variants
+   ============================================ */
+
+/* Default: Focus Light */
+:root {
+  --bg-primary: #FAFAFA;
+  --bg-secondary: #F0F0F0;
+  --bg-tertiary: #E5E5E5;
+  --text-primary: #1A1A1A;
+  --text-secondary: #525252;
+  --text-muted: #737373;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --success: #16A34A;
+  --error: #DC2626;
+  --warning: #CA8A04;
+  --special: #2563EB;
+  --border: #E5E5E5;
+  --focus-ring: #2563EB;
+}
+
+/* ============================================
+   FOCUS THEME
+   Minimal, professional, code-editor feel
+   ============================================ */
+
+[data-theme="focus-light"] {
+  --bg-primary: #FAFAFA;
+  --bg-secondary: #F0F0F0;
+  --bg-tertiary: #E5E5E5;
+  --text-primary: #1A1A1A;
+  --text-secondary: #525252;
+  --text-muted: #737373;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --success: #16A34A;
+  --error: #DC2626;
+  --warning: #CA8A04;
+  --special: #2563EB;
+  --border: #E5E5E5;
+  --focus-ring: #2563EB;
+}
+
+[data-theme="focus-dark"] {
+  --bg-primary: #18181B;
+  --bg-secondary: #27272A;
+  --bg-tertiary: #3F3F46;
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --accent: #3B82F6;
+  --accent-hover: #60A5FA;
+  --success: #22C55E;
+  --error: #EF4444;
+  --warning: #EAB308;
+  --special: #3B82F6;
+  --border: #3F3F46;
+  --focus-ring: #3B82F6;
+}
+
+/* ============================================
+   CALM THEME
+   Warm, soothing, meditation-app feel
+   ============================================ */
+
+[data-theme="calm-light"] {
+  --bg-primary: #FFFBF5;
+  --bg-secondary: #FEF3E2;
+  --bg-tertiary: #FDE6C4;
+  --text-primary: #44403C;
+  --text-secondary: #78716C;
+  --text-muted: #A8A29E;
+  --accent: #9D7356;
+  --accent-hover: #7C5A44;
+  --success: #65A30D;
+  --error: #C2410C;
+  --warning: #B45309;
+  --special: #9D7356;
+  --border: #FDE6C4;
+  --focus-ring: #9D7356;
+}
+
+[data-theme="calm-dark"] {
+  --bg-primary: #1C1917;
+  --bg-secondary: #292524;
+  --bg-tertiary: #44403C;
+  --text-primary: #FAFAF9;
+  --text-secondary: #D6D3D1;
+  --text-muted: #A8A29E;
+  --accent: #D4A574;
+  --accent-hover: #E4BC8E;
+  --success: #84CC16;
+  --error: #EA580C;
+  --warning: #D97706;
+  --special: #D4A574;
+  --border: #44403C;
+  --focus-ring: #D4A574;
+}
+
+/* ============================================
+   FUN THEME
+   Vibrant, playful, gamified feel
+   ============================================ */
+
+[data-theme="fun-light"] {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F0FDF4;
+  --bg-tertiary: #DCFCE7;
+  --text-primary: #14532D;
+  --text-secondary: #166534;
+  --text-muted: #4D7C5F;
+  --accent: #8B5CF6;
+  --accent-hover: #7C3AED;
+  --success: #10B981;
+  --error: #F43F5E;
+  --warning: #F59E0B;
+  --special: #EC4899;
+  --border: #DCFCE7;
+  --focus-ring: #8B5CF6;
+}
+
+[data-theme="fun-dark"] {
+  --bg-primary: #0F172A;
+  --bg-secondary: #1E293B;
+  --bg-tertiary: #334155;
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --accent: #A78BFA;
+  --accent-hover: #C4B5FD;
+  --success: #34D399;
+  --error: #FB7185;
+  --warning: #FBBF24;
+  --special: #F472B6;
+  --border: #334155;
+  --focus-ring: #A78BFA;
+}
+
+/* ============================================
+   HIGH CONTRAST THEME
+   WCAG AAA accessibility-first
+   ============================================ */
+
+[data-theme="hc-light"] {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #E5E5E5;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #404040;
+  --accent: #0000EE;
+  --accent-hover: #0000AA;
+  --success: #007700;
+  --error: #CC0000;
+  --warning: #886600;
+  --special: #0000EE;
+  --border: #000000;
+  --focus-ring: #0000EE;
+}
+
+[data-theme="hc-dark"] {
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #333333;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FFFFFF;
+  --text-muted: #CCCCCC;
+  --accent: #FFFF00;
+  --accent-hover: #FFFF99;
+  --success: #00FF00;
+  --error: #FF6666;
+  --warning: #FFAA00;
+  --special: #FFFF00;
+  --border: #FFFFFF;
+  --focus-ring: #FFFF00;
+}
+
+/* ============================================
+   SYSTEM PREFERENCE SUPPORT
+   Auto-switch based on OS setting
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"][data-base-theme="focus"] {
+    --bg-primary: #18181B;
+    --bg-secondary: #27272A;
+    --bg-tertiary: #3F3F46;
+    --text-primary: #FAFAFA;
+    --text-secondary: #A1A1AA;
+    --text-muted: #71717A;
+    --accent: #3B82F6;
+    --accent-hover: #60A5FA;
+    --success: #22C55E;
+    --error: #EF4444;
+    --warning: #EAB308;
+    --special: #3B82F6;
+    --border: #3F3F46;
+    --focus-ring: #3B82F6;
+  }
+
+  [data-theme="system"][data-base-theme="calm"] {
+    --bg-primary: #1C1917;
+    --bg-secondary: #292524;
+    --bg-tertiary: #44403C;
+    --text-primary: #FAFAF9;
+    --text-secondary: #D6D3D1;
+    --text-muted: #A8A29E;
+    --accent: #D4A574;
+    --accent-hover: #E4BC8E;
+    --success: #84CC16;
+    --error: #EA580C;
+    --warning: #D97706;
+    --special: #D4A574;
+    --border: #44403C;
+    --focus-ring: #D4A574;
+  }
+
+  [data-theme="system"][data-base-theme="fun"] {
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+    --bg-tertiary: #334155;
+    --text-primary: #F8FAFC;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+    --accent: #A78BFA;
+    --accent-hover: #C4B5FD;
+    --success: #34D399;
+    --error: #FB7185;
+    --warning: #FBBF24;
+    --special: #F472B6;
+    --border: #334155;
+    --focus-ring: #A78BFA;
+  }
+
+  [data-theme="system"][data-base-theme="hc"] {
+    --bg-primary: #000000;
+    --bg-secondary: #000000;
+    --bg-tertiary: #333333;
+    --text-primary: #FFFFFF;
+    --text-secondary: #FFFFFF;
+    --text-muted: #CCCCCC;
+    --accent: #FFFF00;
+    --accent-hover: #FFFF99;
+    --success: #00FF00;
+    --error: #FF6666;
+    --warning: #FFAA00;
+    --special: #FFFF00;
+    --border: #FFFFFF;
+    --focus-ring: #FFFF00;
+  }
+}
+
+/* Light mode system preferences (explicit for completeness) */
+@media (prefers-color-scheme: light) {
+  [data-theme="system"][data-base-theme="focus"] {
+    --bg-primary: #FAFAFA;
+    --bg-secondary: #F0F0F0;
+    --bg-tertiary: #E5E5E5;
+    --text-primary: #1A1A1A;
+    --text-secondary: #525252;
+    --text-muted: #737373;
+    --accent: #2563EB;
+    --accent-hover: #1D4ED8;
+    --success: #16A34A;
+    --error: #DC2626;
+    --warning: #CA8A04;
+    --special: #2563EB;
+    --border: #E5E5E5;
+    --focus-ring: #2563EB;
+  }
+
+  [data-theme="system"][data-base-theme="calm"] {
+    --bg-primary: #FFFBF5;
+    --bg-secondary: #FEF3E2;
+    --bg-tertiary: #FDE6C4;
+    --text-primary: #44403C;
+    --text-secondary: #78716C;
+    --text-muted: #A8A29E;
+    --accent: #9D7356;
+    --accent-hover: #7C5A44;
+    --success: #65A30D;
+    --error: #C2410C;
+    --warning: #B45309;
+    --special: #9D7356;
+    --border: #FDE6C4;
+    --focus-ring: #9D7356;
+  }
+
+  [data-theme="system"][data-base-theme="fun"] {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F0FDF4;
+    --bg-tertiary: #DCFCE7;
+    --text-primary: #14532D;
+    --text-secondary: #166534;
+    --text-muted: #4D7C5F;
+    --accent: #8B5CF6;
+    --accent-hover: #7C3AED;
+    --success: #10B981;
+    --error: #F43F5E;
+    --warning: #F59E0B;
+    --special: #EC4899;
+    --border: #DCFCE7;
+    --focus-ring: #8B5CF6;
+  }
+
+  [data-theme="system"][data-base-theme="hc"] {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #E5E5E5;
+    --text-primary: #000000;
+    --text-secondary: #000000;
+    --text-muted: #404040;
+    --accent: #0000EE;
+    --accent-hover: #0000AA;
+    --success: #007700;
+    --error: #CC0000;
+    --warning: #886600;
+    --special: #0000EE;
+    --border: #000000;
+    --focus-ring: #0000EE;
+  }
+}
+
+/* ============================================
+   HIGH CONTRAST SPECIFIC STYLES
+   Additional rules for accessibility
+   ============================================ */
+
+[data-theme="hc-light"] *,
+[data-theme="hc-dark"] *,
+[data-theme="system"][data-base-theme="hc"] * {
+  border-radius: 0 !important;
+}
+
+[data-theme="hc-light"] button,
+[data-theme="hc-light"] a,
+[data-theme="hc-light"] input,
+[data-theme="hc-light"] select,
+[data-theme="hc-dark"] button,
+[data-theme="hc-dark"] a,
+[data-theme="hc-dark"] input,
+[data-theme="hc-dark"] select,
+[data-theme="system"][data-base-theme="hc"] button,
+[data-theme="system"][data-base-theme="hc"] a,
+[data-theme="system"][data-base-theme="hc"] input,
+[data-theme="system"][data-base-theme="hc"] select {
+  border: 2px solid var(--border) !important;
+}
+
+[data-theme="hc-light"] *:focus,
+[data-theme="hc-dark"] *:focus,
+[data-theme="system"][data-base-theme="hc"] *:focus {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 2px !important;
+}
+
+/* ============================================
+   TRANSITIONS
+   Smooth theme switching
+   ============================================ */
+
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Disable transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  body,
+  body * {
+    transition: none !important;
+  }
+}

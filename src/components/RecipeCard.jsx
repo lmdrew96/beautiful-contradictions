@@ -46,16 +46,16 @@ function RecipeCard({ recipe, compact = false }) {
   };
 
   return (
-    <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+    <div className="bg-bg-secondary rounded-xl overflow-hidden">
       {/* Header */}
-      <div className="p-5 border-b border-slate-700">
+      <div className="p-5 border-b border-border">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <h3 className="text-xl font-bold text-white">
+            <h3 className="text-xl font-bold text-text-primary">
               {getText(recipe.title)}
             </h3>
             {!showEnglish && recipe.title.en && (
-              <p className="text-slate-400 text-sm italic mt-1">
+              <p className="text-text-muted text-sm italic mt-1">
                 {recipe.title.en}
               </p>
             )}
@@ -71,12 +71,12 @@ function RecipeCard({ recipe, compact = false }) {
         </div>
 
         {/* Description */}
-        <p className="text-slate-300 text-sm mb-4">
+        <p className="text-text-secondary text-sm mb-4">
           {getText(recipe.description)}
         </p>
 
         {/* Meta info */}
-        <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+        <div className="flex flex-wrap gap-4 text-sm text-text-muted">
           <span className="flex items-center gap-1.5">
             <Clock className="w-4 h-4" />
             {recipe.prepTime} + {recipe.cookTime}
@@ -99,10 +99,10 @@ function RecipeCard({ recipe, compact = false }) {
       </div>
 
       {/* Language toggle */}
-      <div className="px-5 py-3 bg-slate-900/30 border-b border-slate-700">
+      <div className="px-5 py-3 bg-bg-tertiary border-b border-border">
         <button
           onClick={() => setShowEnglish(!showEnglish)}
-          className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors"
+          className="flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors"
         >
           {showEnglish ? (
             <>
@@ -119,32 +119,32 @@ function RecipeCard({ recipe, compact = false }) {
       </div>
 
       {/* Ingredients */}
-      <div className="border-b border-slate-700">
+      <div className="border-b border-border">
         <button
           onClick={() => toggleSection('ingredients')}
-          className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-slate-700/30 transition-colors"
+          className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-bg-tertiary transition-colors"
         >
-          <span className="font-medium text-white">
+          <span className="font-medium text-text-primary">
             {showEnglish ? 'Ingredients' : 'Ingrediente'}
           </span>
           {expandedSections.ingredients ? (
-            <ChevronUp className="w-5 h-5 text-slate-400" />
+            <ChevronUp className="w-5 h-5 text-text-muted" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-slate-400" />
+            <ChevronDown className="w-5 h-5 text-text-muted" />
           )}
         </button>
 
         {expandedSections.ingredients && (
           <ul className="px-5 pb-4 space-y-2">
             {recipe.ingredients.map((ing, index) => (
-              <li key={index} className="flex items-start gap-2 text-slate-300">
-                <span className="text-amber-500 mt-1">-</span>
+              <li key={index} className="flex items-start gap-2 text-text-secondary">
+                <span className="text-warning mt-1">-</span>
                 <span>
                   <span className="font-medium">{ing.amount}</span>
                   {' '}
                   {showEnglish ? ing.en : ing.ro}
                   {!showEnglish && ing.en && (
-                    <span className="text-slate-500 text-sm ml-2">({ing.en})</span>
+                    <span className="text-text-muted text-sm ml-2">({ing.en})</span>
                   )}
                 </span>
               </li>
@@ -157,29 +157,29 @@ function RecipeCard({ recipe, compact = false }) {
       <div>
         <button
           onClick={() => toggleSection('steps')}
-          className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-slate-700/30 transition-colors"
+          className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-bg-tertiary transition-colors"
         >
-          <span className="font-medium text-white">
+          <span className="font-medium text-text-primary">
             {showEnglish ? 'Instructions' : 'Instructiuni'}
           </span>
           {expandedSections.steps ? (
-            <ChevronUp className="w-5 h-5 text-slate-400" />
+            <ChevronUp className="w-5 h-5 text-text-muted" />
           ) : (
-            <ChevronDown className="w-5 h-5 text-slate-400" />
+            <ChevronDown className="w-5 h-5 text-text-muted" />
           )}
         </button>
 
         {expandedSections.steps && (
           <ol className="px-5 pb-5 space-y-3">
             {recipe.steps.map((step, index) => (
-              <li key={index} className="flex gap-3 text-slate-300">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-medium">
+              <li key={index} className="flex gap-3 text-text-secondary">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-warning/20 text-warning flex items-center justify-center text-sm font-medium">
                   {index + 1}
                 </span>
                 <div>
                   <p>{showEnglish ? step.en : step.ro}</p>
                   {!showEnglish && step.en && (
-                    <p className="text-slate-500 text-sm mt-1 italic">{step.en}</p>
+                    <p className="text-text-muted text-sm mt-1 italic">{step.en}</p>
                   )}
                 </div>
               </li>
@@ -189,7 +189,7 @@ function RecipeCard({ recipe, compact = false }) {
       </div>
 
       {/* Footer attribution */}
-      <div className="px-5 py-3 bg-slate-900/30 text-xs text-slate-500 border-t border-slate-700">
+      <div className="px-5 py-3 bg-bg-tertiary text-xs text-text-muted border-t border-border">
         {recipe.source} - {recipe.license}
       </div>
     </div>

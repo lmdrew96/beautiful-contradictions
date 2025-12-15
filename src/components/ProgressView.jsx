@@ -14,7 +14,7 @@ export default function ProgressView({ stats, errors, setErrors }) {
 
   // Calculate some derived stats
   const totalMinutes = stats.chaosMinutes + stats.fogMinutes;
-  const avgErrorCount = errors.length > 0 
+  const avgErrorCount = errors.length > 0
     ? (errors.reduce((sum, e) => sum + e.wrongCount, 0) / errors.length).toFixed(1)
     : 0;
 
@@ -23,11 +23,11 @@ export default function ProgressView({ stats, errors, setErrors }) {
       <div className="max-w-lg mx-auto py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex p-4 bg-slate-700/50 rounded-2xl mb-4">
-            <BarChart3 size={40} className="text-white" />
+          <div className="inline-flex p-4 bg-bg-tertiary rounded-2xl mb-4">
+            <BarChart3 size={40} className="text-text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Your Journey</h1>
-          <p className="text-slate-400">Progress through beautiful chaos</p>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Your Journey</h1>
+          <p className="text-text-muted">Progress through beautiful chaos</p>
         </div>
 
         {/* Main Stats Grid */}
@@ -60,46 +60,46 @@ export default function ProgressView({ stats, errors, setErrors }) {
             icon={Award}
             value={stats.totalSessions}
             label="Total Sessions"
-            gradient="from-slate-800/50 to-slate-700/50"
-            borderColor="border-slate-700"
-            textColor="text-white"
+            gradient="from-bg-secondary to-bg-tertiary"
+            borderColor="border-border"
+            textColor="text-text-primary"
           />
         </div>
 
         {/* Summary Card */}
         <div className="bg-gradient-to-r from-purple-900/20 via-pink-900/20 to-orange-900/20 rounded-2xl p-6 border border-purple-800/30 mb-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Summary</h3>
+          <h3 className="text-lg font-semibold text-text-primary mb-4">Summary</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-slate-400">Total Learning Time</p>
-              <p className="text-2xl font-bold text-white">{totalMinutes} min</p>
+              <p className="text-text-muted">Total Learning Time</p>
+              <p className="text-2xl font-bold text-text-primary">{totalMinutes} min</p>
             </div>
             <div>
-              <p className="text-slate-400">Garden Size</p>
+              <p className="text-text-muted">Garden Size</p>
               <p className="text-2xl font-bold text-rose-400">{errors.length} words</p>
             </div>
             <div>
-              <p className="text-slate-400">Avg. Difficulty</p>
-              <p className="text-2xl font-bold text-teal-400">×{avgErrorCount}</p>
+              <p className="text-text-muted">Avg. Difficulty</p>
+              <p className="text-2xl font-bold text-teal-400">x{avgErrorCount}</p>
             </div>
             <div>
-              <p className="text-slate-400">Sessions</p>
+              <p className="text-text-muted">Sessions</p>
               <p className="text-2xl font-bold text-purple-400">{stats.totalSessions}</p>
             </div>
           </div>
         </div>
 
         {/* Error Garden List */}
-        <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Flower2 size={20} className="text-rose-400" />
-              <h3 className="text-lg font-semibold text-white">Error Garden</h3>
+              <h3 className="text-lg font-semibold text-text-primary">Error Garden</h3>
             </div>
             {errors.length > 0 && (
               <button
                 onClick={clearErrorGarden}
-                className="text-xs text-slate-500 hover:text-rose-400 transition-colors flex items-center gap-1"
+                className="text-xs text-text-muted hover:text-error transition-colors flex items-center gap-1"
               >
                 <Trash2 size={14} />
                 Clear All
@@ -114,29 +114,29 @@ export default function ProgressView({ stats, errors, setErrors }) {
                 .map((error, i) => (
                   <div
                     key={i}
-                    className="flex justify-between items-center bg-slate-700/30 rounded-lg px-4 py-3 group"
+                    className="flex justify-between items-center bg-bg-tertiary rounded-lg px-4 py-3 group"
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-white font-medium">{error.ro}</span>
-                        <span className="text-slate-500">→</span>
-                        <span className="text-slate-300 truncate">{error.en}</span>
+                        <span className="text-text-primary font-medium">{error.ro}</span>
+                        <span className="text-text-muted">-&gt;</span>
+                        <span className="text-text-secondary truncate">{error.en}</span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-slate-500 capitalize">
+                        <span className="text-xs text-text-muted capitalize">
                           {error.category}
                         </span>
-                        <span className="text-xs text-slate-600">•</span>
-                        <span className="text-xs text-slate-500">
+                        <span className="text-xs text-text-muted">-</span>
+                        <span className="text-xs text-text-muted">
                           Difficulty {error.difficulty}
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-rose-400 font-medium">×{error.wrongCount}</span>
+                      <span className="text-rose-400 font-medium">x{error.wrongCount}</span>
                       <button
                         onClick={() => removeError(error.ro)}
-                        className="opacity-0 group-hover:opacity-100 text-slate-500 hover:text-rose-400 transition-all"
+                        className="opacity-0 group-hover:opacity-100 text-text-muted hover:text-error transition-all"
                         title="Remove from garden"
                       >
                         <Trash2 size={14} />
@@ -147,9 +147,9 @@ export default function ProgressView({ stats, errors, setErrors }) {
             </div>
           ) : (
             <div className="text-center py-8">
-              <Flower2 size={40} className="text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-400">No errors yet!</p>
-              <p className="text-slate-500 text-sm mt-1">
+              <Flower2 size={40} className="text-text-muted mx-auto mb-3" />
+              <p className="text-text-secondary">No errors yet!</p>
+              <p className="text-text-muted text-sm mt-1">
                 Start guessing in the Error Garden to grow your collection.
               </p>
             </div>
@@ -157,11 +157,11 @@ export default function ProgressView({ stats, errors, setErrors }) {
         </div>
 
         {/* Motivational Quote */}
-        <div className="bg-slate-800/30 rounded-2xl p-6 border border-slate-700/50">
-          <p className="text-center text-slate-300 italic">
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border">
+          <p className="text-center text-text-secondary italic">
             "The mess is the method. Your mistakes are your map."
           </p>
-          <p className="text-center text-slate-500 text-sm mt-2">
+          <p className="text-center text-text-muted text-sm mt-2">
             Keep embracing the chaos.
           </p>
         </div>
@@ -178,7 +178,7 @@ export default function ProgressView({ stats, errors, setErrors }) {
                 window.location.reload();
               }
             }}
-            className="text-xs text-slate-600 hover:text-rose-400 transition-colors"
+            className="text-xs text-text-muted hover:text-error transition-colors"
           >
             Reset All Progress
           </button>
@@ -195,7 +195,7 @@ function StatCard({ icon: Icon, value, label, gradient, borderColor, textColor }
         <Icon size={20} className={textColor} />
       </div>
       <div className={`text-3xl font-bold ${textColor}`}>{value}</div>
-      <div className="text-slate-400 text-sm">{label}</div>
+      <div className="text-text-muted text-sm">{label}</div>
     </div>
   );
 }

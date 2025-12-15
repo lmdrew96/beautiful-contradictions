@@ -90,15 +90,15 @@ export default function ChaosEngineView({ updateStats }) {
             <div className="inline-flex p-4 bg-purple-500/20 rounded-2xl mb-4">
               <Shuffle size={40} className="text-purple-400" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Chaos Window</h1>
-            <p className="text-slate-400">Random content, structured time</p>
+            <h1 className="text-3xl font-bold text-text-primary mb-2">Chaos Window</h1>
+            <p className="text-text-muted">Random content, structured time</p>
           </div>
 
           {/* Duration Selector */}
-          <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
             <div className="flex items-center gap-2 mb-4">
-              <Clock size={18} className="text-slate-400" />
-              <h3 className="text-lg font-semibold text-white">Session Length</h3>
+              <Clock size={18} className="text-text-muted" />
+              <h3 className="text-lg font-semibold text-text-primary">Session Length</h3>
             </div>
             <div className="grid grid-cols-3 gap-3">
               {SESSION_DURATIONS.map((option) => (
@@ -108,7 +108,7 @@ export default function ChaosEngineView({ updateStats }) {
                   className={`py-4 rounded-xl font-medium transition-all ${
                     sessionDuration === option.minutes * 60
                       ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
-                      : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                      : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
                   }`}
                 >
                   <div className="text-lg">{option.label}</div>
@@ -119,15 +119,15 @@ export default function ChaosEngineView({ updateStats }) {
           </div>
 
           {/* Mode Toggle */}
-          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 mb-6">
-            <p className="text-sm text-slate-400 mb-3 text-center">Content Type</p>
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+            <p className="text-sm text-text-muted mb-3 text-center">Content Type</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setMode('media')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'media'
                     ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <Video size={18} />
@@ -138,14 +138,14 @@ export default function ChaosEngineView({ updateStats }) {
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'recipe'
                     ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <ChefHat size={18} />
                 Recipes
               </button>
             </div>
-            <p className="text-center text-slate-500 text-xs mt-3">
+            <p className="text-center text-text-muted text-xs mt-3">
               {mode === 'media'
                 ? `${chaosContent.length} videos and audio`
                 : `${ROMANIAN_RECIPES.length} traditional recipes`
@@ -154,31 +154,31 @@ export default function ChaosEngineView({ updateStats }) {
           </div>
 
           {/* Instructions */}
-          <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">How It Works</h3>
-            <ol className="text-slate-300 space-y-3 text-sm">
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
+            <h3 className="text-lg font-semibold text-text-primary mb-3">How It Works</h3>
+            <ol className="text-text-secondary space-y-3 text-sm">
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">1</span>
                 <span>Timer starts, random content appears</span>
               </li>
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                <span>Follow your curiosity — no agenda, no pressure</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">2</span>
+                <span>Follow your curiosity - no agenda, no pressure</span>
               </li>
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">3</span>
                 <span>Hit "Shuffle" anytime for new content</span>
               </li>
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">4</span>
                 <span>When timer ends, capture one thing you noticed</span>
               </li>
             </ol>
           </div>
 
           {/* Content Preview */}
-          <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50 mb-6">
-            <p className="text-sm text-slate-400 text-center">
+          <div className="bg-bg-tertiary rounded-xl p-4 border border-border mb-6">
+            <p className="text-sm text-text-muted text-center">
               {chaosContent.length} items in the chaos pool
             </p>
           </div>
@@ -186,7 +186,7 @@ export default function ChaosEngineView({ updateStats }) {
           {/* Start Button */}
           <button
             onClick={startSession}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"
           >
             Begin Chaos Window
             <ArrowRight size={20} />
@@ -208,29 +208,29 @@ export default function ChaosEngineView({ updateStats }) {
             <div className="inline-flex p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl mb-4">
               <Sparkles size={40} className="text-purple-400" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Session Complete!</h1>
-            <p className="text-slate-400">Time for a micro-reflection</p>
+            <h1 className="text-3xl font-bold text-text-primary mb-2">Session Complete!</h1>
+            <p className="text-text-muted">Time for a micro-reflection</p>
           </div>
 
           {/* Reflection Input */}
-          <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
+            <h3 className="text-lg font-semibold text-text-primary mb-4">
               One thing I noticed...
             </h3>
             <textarea
               value={reflection}
               onChange={(e) => setReflection(e.target.value)}
               placeholder="A word that stuck with me, a pattern I saw, something I want to explore more..."
-              className="w-full h-32 bg-slate-700/50 border border-slate-600 rounded-xl p-4 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+              className="w-full h-32 bg-bg-tertiary border border-border rounded-xl p-4 text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent resize-none"
               autoFocus
             />
           </div>
 
           {/* Session Summary */}
-          <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50 mb-6">
+          <div className="bg-bg-tertiary rounded-xl p-4 border border-border mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Content {mode === 'recipe' ? 'explored' : 'watched'}:</span>
-              <span className="text-white truncate ml-4">
+              <span className="text-text-muted">Content {mode === 'recipe' ? 'explored' : 'watched'}:</span>
+              <span className="text-text-primary truncate ml-4">
                 {mode === 'recipe'
                   ? currentRecipe?.title?.en || currentRecipe?.title?.ro || 'Various'
                   : currentContent?.title || 'Various'
@@ -238,8 +238,8 @@ export default function ChaosEngineView({ updateStats }) {
               </span>
             </div>
             <div className="flex justify-between text-sm mt-2">
-              <span className="text-slate-400">Time spent:</span>
-              <span className="text-purple-400 font-medium">
+              <span className="text-text-muted">Time spent:</span>
+              <span className="text-accent font-medium">
                 {Math.floor(sessionDuration / 60)} minutes
               </span>
             </div>
@@ -249,7 +249,7 @@ export default function ChaosEngineView({ updateStats }) {
           <div className="flex gap-3">
             <button
               onClick={resetSession}
-              className="flex-1 py-3 bg-slate-700 rounded-xl text-slate-300 font-medium hover:bg-slate-600 transition-colors"
+              className="flex-1 py-3 bg-bg-tertiary rounded-xl text-text-secondary font-medium hover:bg-bg-secondary transition-colors"
             >
               Skip
             </button>
@@ -272,7 +272,7 @@ export default function ChaosEngineView({ updateStats }) {
     <div className="min-h-screen pb-24 md:pt-20 px-6">
       <div className="max-w-2xl mx-auto py-6">
         {/* Timer Card */}
-        <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
           <Timer
             seconds={timer.seconds}
             totalSeconds={sessionDuration}
@@ -296,14 +296,14 @@ export default function ChaosEngineView({ updateStats }) {
         <div className="flex gap-3 mt-6">
           <button
             onClick={shuffleContent}
-            className="flex-1 py-3 bg-slate-700 rounded-xl text-white font-medium hover:bg-slate-600 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 bg-bg-tertiary rounded-xl text-text-primary font-medium hover:bg-bg-secondary transition-colors flex items-center justify-center gap-2"
           >
             <Shuffle size={18} />
             {mode === 'recipe' ? 'New Recipe' : 'Shuffle'}
           </button>
           <button
             onClick={endEarly}
-            className="flex-1 py-3 bg-slate-700 rounded-xl text-white font-medium hover:bg-slate-600 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-3 bg-bg-tertiary rounded-xl text-text-primary font-medium hover:bg-bg-secondary transition-colors flex items-center justify-center gap-2"
           >
             <X size={18} />
             End Session
@@ -313,7 +313,7 @@ export default function ChaosEngineView({ updateStats }) {
         {/* Tip */}
         <div className="mt-6 p-4 bg-purple-900/20 rounded-xl border border-purple-800/30">
           <p className="text-purple-300 text-sm text-center italic">
-            💡 No need to understand everything. Just let the language wash over you.
+            No need to understand everything. Just let the language wash over you.
           </p>
         </div>
       </div>

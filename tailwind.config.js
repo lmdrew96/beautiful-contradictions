@@ -12,12 +12,28 @@ export default {
         mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
+        // Semantic theme colors (CSS variables)
+        'bg-primary': 'var(--bg-primary)',
+        'bg-secondary': 'var(--bg-secondary)',
+        'bg-tertiary': 'var(--bg-tertiary)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-muted': 'var(--text-muted)',
+        'accent': 'var(--accent)',
+        'accent-hover': 'var(--accent-hover)',
+        'success': 'var(--success)',
+        'error': 'var(--error)',
+        'warning': 'var(--warning)',
+        'special': 'var(--special)',
+        'border': 'var(--border)',
+        'focus-ring': 'var(--focus-ring)',
+        // Feature-specific colors (keep for gradients)
         chaos: {
           purple: '#8B5CF6',
           pink: '#EC4899',
           indigo: '#6366F1',
         },
-        error: {
+        'error-feature': {
           rose: '#F43F5E',
           orange: '#F97316',
         },

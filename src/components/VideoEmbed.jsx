@@ -65,10 +65,10 @@ export default function VideoEmbed({
     <div className={`relative ${className}`}>
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-slate-900 flex items-center justify-center z-10">
+        <div className="absolute inset-0 bg-bg-primary flex items-center justify-center z-10">
           <div className="text-center">
-            <Loader2 size={32} className="text-slate-400 animate-spin mx-auto mb-2" />
-            <p className="text-slate-500 text-sm">Loading...</p>
+            <Loader2 size={32} className="text-text-muted animate-spin mx-auto mb-2" />
+            <p className="text-text-muted text-sm">Loading...</p>
           </div>
         </div>
       )}
@@ -99,12 +99,12 @@ export default function VideoEmbed({
           />
         </div>
       ) : (
-        <div className="aspect-video flex items-center justify-center bg-slate-800">
+        <div className="aspect-video flex items-center justify-center bg-bg-secondary">
           <a
             href={embedUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-slate-700 rounded-lg text-white hover:bg-slate-600 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-bg-tertiary rounded-lg text-text-primary hover:bg-bg-secondary transition-colors"
           >
             <ExternalLink size={18} />
             Open in new tab
@@ -114,9 +114,9 @@ export default function VideoEmbed({
 
       {/* Fallback message - shows after timeout */}
       {showFallback && watchUrl && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/95 to-transparent p-4">
+        <div className="absolute bottom-0 left-0 right-0 bg-bg-primary/95 p-4">
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 text-slate-400 text-sm">
+            <div className="flex items-center gap-2 text-text-muted text-sm">
               <AlertCircle size={16} />
               <span>Having trouble?</span>
             </div>
@@ -124,7 +124,7 @@ export default function VideoEmbed({
               href={watchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded-lg text-white text-sm transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 bg-bg-tertiary hover:bg-bg-secondary rounded-lg text-text-primary text-sm transition-colors"
             >
               <ExternalLink size={14} />
               Open externally

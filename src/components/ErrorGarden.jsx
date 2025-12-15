@@ -192,17 +192,17 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             <div className="inline-flex p-4 bg-rose-500/20 rounded-2xl mb-4">
               <Flower2 size={40} className="text-rose-400" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Error Garden</h1>
-            <p className="text-slate-400">Your mistakes become your curriculum</p>
+            <h1 className="text-3xl font-bold text-text-primary mb-2">Error Garden</h1>
+            <p className="text-text-muted">Your mistakes become your curriculum</p>
           </div>
 
           {/* Error Garden Preview */}
           <div className="bg-gradient-to-br from-rose-900/30 to-orange-900/30 rounded-2xl p-6 border border-rose-800/50 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">Your Garden</h3>
+              <h3 className="text-lg font-semibold text-text-primary">Your Garden</h3>
               <span className="text-3xl font-bold text-rose-400">{errors.length}</span>
             </div>
-            
+
             {errors.length > 0 ? (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {errors
@@ -211,44 +211,44 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                   .map((error, i) => (
                     <div
                       key={i}
-                      className="flex justify-between items-center bg-slate-800/50 rounded-lg px-3 py-2"
+                      className="flex justify-between items-center bg-bg-secondary rounded-lg px-3 py-2"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="text-white font-medium">{error.ro}</span>
-                        <span className="text-slate-500">→</span>
-                        <span className="text-slate-400">{error.en}</span>
+                        <span className="text-text-primary font-medium">{error.ro}</span>
+                        <span className="text-text-muted">-&gt;</span>
+                        <span className="text-text-secondary">{error.en}</span>
                       </div>
-                      <span className="text-rose-400 text-sm font-medium">×{error.wrongCount}</span>
+                      <span className="text-rose-400 text-sm font-medium">x{error.wrongCount}</span>
                     </div>
                   ))}
                 {errors.length > 5 && (
-                  <p className="text-slate-500 text-sm text-center pt-2">
+                  <p className="text-text-muted text-sm text-center pt-2">
                     +{errors.length - 5} more in your garden
                   </p>
                 )}
               </div>
             ) : (
               <div className="text-center py-4">
-                <p className="text-slate-400 text-sm">
+                <p className="text-text-secondary text-sm">
                   No errors yet! Make some guesses to grow your garden.
                 </p>
-                <p className="text-slate-500 text-xs mt-2">
-                  🌱 Wrong guesses become seeds for learning
+                <p className="text-text-muted text-xs mt-2">
+                  Wrong guesses become seeds for learning
                 </p>
               </div>
             )}
           </div>
 
           {/* Mode Toggle */}
-          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 mb-6">
-            <p className="text-sm text-slate-400 mb-3 text-center">Practice Mode</p>
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+            <p className="text-sm text-text-muted mb-3 text-center">Practice Mode</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setMode('words')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'words'
                     ? 'bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <BookOpen size={18} />
@@ -259,7 +259,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'sentences'
                     ? 'bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
-                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <MessageSquare size={18} />
@@ -269,29 +269,29 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           </div>
 
           {/* How It Works */}
-          <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">The Method</h3>
-            <ol className="text-slate-300 space-y-3 text-sm">
+          <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
+            <h3 className="text-lg font-semibold text-text-primary mb-3">The Method</h3>
+            <ol className="text-text-secondary space-y-3 text-sm">
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">1</span>
                 <span>See a Romanian {mode === 'words' ? 'word' : 'sentence'}</span>
               </li>
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                <span><strong className="text-rose-400">GUESS first</strong> — don't look it up!</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">2</span>
+                <span><strong className="text-rose-400">GUESS first</strong> - do not look it up!</span>
               </li>
               <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">3</span>
                 <span>Check your answer</span>
               </li>
               {mode === 'words' && (
                 <>
                   <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                    <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">4</span>
                     <span>Wrong guesses go to your garden</span>
                   </li>
                   <li className="flex gap-3">
-                    <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">5</span>
+                    <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">5</span>
                     <span>Garden words appear more often</span>
                   </li>
                 </>
@@ -302,14 +302,14 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           {/* Start Button */}
           <button
             onClick={startSession}
-            className="w-full py-4 bg-gradient-to-r from-rose-600 to-orange-600 rounded-xl text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-gradient-to-r from-rose-600 to-orange-600 rounded-xl text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"
           >
             Start Guessing
             <ArrowRight size={20} />
           </button>
 
           {/* Item count */}
-          <p className="text-center text-slate-500 text-sm mt-4">
+          <p className="text-center text-text-muted text-sm mt-4">
             {mode === 'words'
               ? `${VOCABULARY_DATABASE.length} words in the database`
               : `${ALL_SENTENCES.length} sentences from Tatoeba`
@@ -330,8 +330,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
             <div className="text-sm">
-              <span className="text-slate-400">Reviewed: </span>
-              <span className="text-white font-medium">{cardsReviewed}</span>
+              <span className="text-text-muted">Reviewed: </span>
+              <span className="text-text-primary font-medium">{cardsReviewed}</span>
             </div>
             {streak > 0 && (
               <div className="flex items-center gap-1 px-2 py-1 bg-green-900/50 rounded-full">
@@ -342,7 +342,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           </div>
           <button
             onClick={endSession}
-            className="text-slate-400 hover:text-white transition-colors text-sm"
+            className="text-text-muted hover:text-text-primary transition-colors text-sm"
           >
             End Session
           </button>
@@ -355,7 +355,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
               ? isCorrect
                 ? 'bg-gradient-to-br from-green-900/50 to-emerald-900/50 border-2 border-green-600'
                 : 'bg-gradient-to-br from-rose-900/50 to-orange-900/50 border-2 border-rose-600'
-              : 'bg-slate-800/50 border border-slate-700'
+              : 'bg-bg-secondary border border-border'
           }`}
         >
           <div className="text-center">
@@ -367,16 +367,16 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                   className={`w-2 h-2 rounded-full ${
                     i < (currentCard?.difficulty || 1)
                       ? 'bg-rose-500'
-                      : 'bg-slate-600'
+                      : 'bg-bg-tertiary'
                   }`}
                 />
               ))}
             </div>
 
-            <p className="text-slate-400 text-sm mb-2">
+            <p className="text-text-muted text-sm mb-2">
               {mode === 'sentences' ? 'Translate this sentence:' : 'What does this mean?'}
             </p>
-            <p className={`font-bold text-white mb-6 ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
+            <p className={`font-bold text-text-primary mb-6 ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
               {currentCard?.romanian || currentCard?.ro}
             </p>
 
@@ -389,7 +389,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                   onChange={(e) => setGuess(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type your guess..."
-                  className="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-4 text-white text-center text-lg placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500 mb-4"
+                  className="w-full bg-bg-tertiary border border-border rounded-xl px-4 py-4 text-text-primary text-center text-lg placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent mb-4"
                   autoFocus
                   autoComplete="off"
                   autoCapitalize="off"
@@ -423,7 +423,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                         Your guess:{' '}
                         <span className="line-through opacity-70">{guess}</span>
                       </p>
-                      <p className={`text-white font-bold ${mode === 'sentences' ? 'text-lg' : 'text-2xl'}`}>
+                      <p className={`text-text-primary font-bold ${mode === 'sentences' ? 'text-lg' : 'text-2xl'}`}>
                         {currentCard?.english || currentCard?.en}
                       </p>
                       {mode === 'words' && (
@@ -437,7 +437,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                 </div>
                 <button
                   onClick={nextCard}
-                  className="w-full py-3 bg-slate-700 rounded-xl text-white font-medium hover:bg-slate-600 transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-bg-tertiary rounded-xl text-text-primary font-medium hover:bg-bg-secondary transition-colors flex items-center justify-center gap-2"
                 >
                   Next Word
                   <ArrowRight size={18} />
@@ -449,7 +449,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
 
         {/* Category hint */}
         <div className="text-center">
-          <span className="text-xs text-slate-500 capitalize">
+          <span className="text-xs text-text-muted capitalize">
             Category: {currentCard?.category || 'general'}
           </span>
         </div>
@@ -457,7 +457,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
         {/* Tip */}
         <div className="mt-6 p-4 bg-rose-900/20 rounded-xl border border-rose-800/30">
           <p className="text-rose-300 text-sm text-center italic">
-            💡 Wrong guesses stick better than passive reading. Embrace the mistakes!
+            Wrong guesses stick better than passive reading. Embrace the mistakes!
           </p>
         </div>
       </div>

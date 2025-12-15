@@ -1,3 +1,5 @@
+@import './themes.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,67 +9,100 @@
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
-    @apply bg-slate-950 text-white antialiased;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-  
+
   ::-webkit-scrollbar-track {
-    @apply bg-slate-800;
+    background: var(--bg-secondary);
   }
-  
+
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-600 rounded-full;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-500;
+    background: var(--text-muted);
   }
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 /* Custom component styles */
 @layer components {
   .btn-primary {
-    @apply px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 
-           rounded-xl text-white font-medium 
+    @apply px-4 py-2 rounded-xl font-medium
            hover:opacity-90 transition-opacity;
+    background-color: var(--accent);
+    color: white;
   }
-  
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+  }
+
   .btn-secondary {
-    @apply px-4 py-2 bg-slate-700 rounded-xl text-slate-300 
-           font-medium hover:bg-slate-600 transition-colors;
+    @apply px-4 py-2 rounded-xl font-medium transition-colors;
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
   }
-  
+
+  .btn-secondary:hover {
+    background-color: var(--bg-tertiary);
+  }
+
   .card {
-    @apply bg-slate-800/50 rounded-2xl p-6 border border-slate-700;
+    @apply rounded-2xl p-6;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
   }
-  
+
   .card-gradient-purple {
-    @apply bg-gradient-to-br from-purple-900/50 to-indigo-900/50 
+    @apply bg-gradient-to-br from-purple-900/50 to-indigo-900/50
            border border-purple-800/50;
   }
-  
+
   .card-gradient-rose {
-    @apply bg-gradient-to-br from-rose-900/50 to-orange-900/50 
+    @apply bg-gradient-to-br from-rose-900/50 to-orange-900/50
            border border-rose-800/50;
   }
-  
+
   .card-gradient-teal {
-    @apply bg-gradient-to-br from-teal-900/50 to-cyan-900/50 
+    @apply bg-gradient-to-br from-teal-900/50 to-cyan-900/50
            border border-teal-800/50;
   }
-  
+
   .input-field {
-    @apply w-full bg-slate-700 border border-slate-600 rounded-xl 
-           px-4 py-3 text-white placeholder-slate-400 
-           focus:outline-none focus:ring-2 focus:ring-purple-500;
+    @apply w-full rounded-xl px-4 py-3;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .input-field::placeholder {
+    color: var(--text-muted);
+  }
+
+  .input-field:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--focus-ring);
   }
 }
 
@@ -77,7 +112,7 @@
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
-  
+
   @keyframes gradient {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
