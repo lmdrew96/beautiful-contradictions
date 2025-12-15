@@ -18,10 +18,12 @@
  * Attribution: Sentences from Tatoeba.org, CC-BY 2.0 FR
  */
 
-// Beginner sentences loaded immediately
+// All sentence levels exported directly for immediate use
 export { TATOEBA_BEGINNER } from './beginner';
+export { TATOEBA_INTERMEDIATE } from './intermediate';
+export { TATOEBA_ADVANCED } from './advanced';
 
-// Lazy-loaded chunks for intermediate and advanced
+// Lazy-loaded chunks for performance optimization (if needed)
 export const loadIntermediate = () => import('./intermediate');
 export const loadAdvanced = () => import('./advanced');
 

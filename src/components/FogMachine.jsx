@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CloudFog, ArrowRight, LogOut, Shuffle } from 'lucide-react';
+import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen } from 'lucide-react';
 import ContentEmbed from './ContentEmbed';
+import StoryReader from './StoryReader';
 import { formatTime } from '../hooks/useStorage';
 import { getRandomContent, getContentByDifficulty } from '../data/content';
+import { getRandomStory, ROMANIAN_STORIES } from '../data/stories';
 
 export default function FogMachineView({ updateStats }) {
   const [sessionActive, setSessionActive] = useState(false);
   const [fogLevel, setFogLevel] = useState(6);
   const [currentContent, setCurrentContent] = useState(null);
+  const [currentStory, setCurrentStory] = useState(null);
+  const [storyIndex, setStoryIndex] = useState(0);
   const [timeInFog, setTimeInFog] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [mode, setMode] = useState('media'); // 'media' | 'reading'
 
   // Timer effect
   useEffect(() => {
@@ -21,23 +26,57 @@ export default function FogMachineView({ updateStats }) {
   }, [isRunning]);
 
   const getFogContent = useCallback(() => {
-    return getRandomContent((c) => 
-      c.sessionTypes.includes('fog_session') && 
+    return getRandomContent((c) =>
+      c.sessionTypes.includes('fog_session') &&
       c.difficulty >= fogLevel - 1 &&
       c.instructionLang === 'ro' // Prefer Romanian-only content for fog
     ) || getRandomContent((c) => c.sessionTypes.includes('fog_session'));
   }, [fogLevel]);
 
+  const getFogStory = useCallback(() => {
+    // Get stories matching fog level (within 2 levels)
+    return getRandomStory((s) =>
+      s.difficulty >= fogLevel - 2 && s.difficulty <= fogLevel + 2
+    ) || getRandomStory();
+  }, [fogLevel]);
+
+  // Filter stories by difficulty for navigation
+  const filteredStories = ROMANIAN_STORIES.filter(
+    s => s.difficulty >= fogLevel - 2 && s.difficulty <= fogLevel + 2
+  );
+
   const startSession = () => {
-    const content = getFogContent();
-    setCurrentContent(content);
+    if (mode === 'reading') {
+      const story = getFogStory();
+      const index = filteredStories.findIndex(s => s.id === story.id);
+      setCurrentStory(story);
+      setStoryIndex(index >= 0 ? index : 0);
+    } else {
+      const content = getFogContent();
+      setCurrentContent(content);
+    }
     setSessionActive(true);
     setIsRunning(true);
     setTimeInFog(0);
   };
 
   const shuffleContent = () => {
-    setCurrentContent(getFogContent());
+    if (mode === 'reading') {
+      const story = getFogStory();
+      const index = filteredStories.findIndex(s => s.id === story.id);
+      setCurrentStory(story);
+      setStoryIndex(index >= 0 ? index : 0);
+    } else {
+      setCurrentContent(getFogContent());
+    }
+  };
+
+  const navigateStory = (direction) => {
+    const newIndex = storyIndex + direction;
+    if (newIndex >= 0 && newIndex < filteredStories.length) {
+      setStoryIndex(newIndex);
+      setCurrentStory(filteredStories[newIndex]);
+    }
   };
 
   const endSession = () => {
@@ -48,6 +87,7 @@ export default function FogMachineView({ updateStats }) {
     }));
     setSessionActive(false);
     setCurrentContent(null);
+    setCurrentStory(null);
     setTimeInFog(0);
   };
 
@@ -128,6 +168,41 @@ export default function FogMachineView({ updateStats }) {
                 {fogLevelDescriptions[fogLevel]?.desc}
               </p>
             </div>
+          </div>
+
+          {/* Mode Toggle */}
+          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 mb-6">
+            <p className="text-sm text-slate-400 mb-3 text-center">Content Type</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setMode('media')}
+                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  mode === 'media'
+                    ? 'bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                <Video size={18} />
+                Video/Audio
+              </button>
+              <button
+                onClick={() => setMode('reading')}
+                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  mode === 'reading'
+                    ? 'bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                <BookOpen size={18} />
+                Reading
+              </button>
+            </div>
+            <p className="text-center text-slate-500 text-xs mt-3">
+              {mode === 'media'
+                ? 'Listen and watch Romanian content'
+                : `${filteredStories.length} stories at this fog level`
+              }
+            </p>
           </div>
 
           {/* The Fog Method */}
@@ -216,7 +291,17 @@ export default function FogMachineView({ updateStats }) {
         </div>
 
         {/* Content */}
-        <ContentEmbed content={currentContent} />
+        {mode === 'reading' && currentStory ? (
+          <StoryReader
+            story={currentStory}
+            onNext={() => navigateStory(1)}
+            onPrevious={() => navigateStory(-1)}
+            hasNext={storyIndex < filteredStories.length - 1}
+            hasPrevious={storyIndex > 0}
+          />
+        ) : (
+          <ContentEmbed content={currentContent} />
+        )}
 
         {/* Controls */}
         <div className="mt-6">
@@ -225,7 +310,7 @@ export default function FogMachineView({ updateStats }) {
             className="w-full py-3 bg-slate-700 rounded-xl text-white font-medium hover:bg-slate-600 transition-colors flex items-center justify-center gap-2"
           >
             <Shuffle size={18} />
-            Different Content
+            {mode === 'reading' ? 'Random Story' : 'Different Content'}
           </button>
         </div>
 

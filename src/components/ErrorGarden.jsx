@@ -1,6 +1,9 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles } from 'lucide-react';
+import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare } from 'lucide-react';
 import { getWeightedRandomVocab, VOCABULARY_DATABASE } from '../data/vocabulary';
+import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED } from '../data/tatoeba';
+
+const ALL_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
 
 export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [currentCard, setCurrentCard] = useState(null);
@@ -10,6 +13,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [sessionActive, setSessionActive] = useState(false);
   const [cardsReviewed, setCardsReviewed] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [mode, setMode] = useState('words'); // 'words' | 'sentences'
   const inputRef = useRef(null);
 
   const startSession = () => {
@@ -20,23 +24,35 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   };
 
   const nextCard = useCallback(() => {
-    const nextWord = getWeightedRandomVocab(errors);
-    setCurrentCard(nextWord);
+    let nextItem;
+    if (mode === 'sentences') {
+      nextItem = getRandomSentence(ALL_SENTENCES);
+    } else {
+      nextItem = getWeightedRandomVocab(errors);
+    }
+    setCurrentCard(nextItem);
     setGuess('');
     setShowResult(false);
     setTimeout(() => inputRef.current?.focus(), 100);
-  }, [errors]);
+  }, [errors, mode]);
 
   const checkGuess = () => {
     if (!guess.trim() || !currentCard) return;
 
     // Check for correct answer (case-insensitive, trimmed)
     const userGuess = guess.toLowerCase().trim();
-    const correctAnswer = currentCard.en.toLowerCase().trim();
-    
+    // Sentences use 'english', vocab uses 'en'
+    const correctAnswer = (currentCard.english || currentCard.en).toLowerCase().trim();
+
     // Also check for alternate answers separated by /
     const alternateAnswers = correctAnswer.split('/').map(a => a.trim());
-    const correct = alternateAnswers.some(answer => userGuess === answer);
+    // For sentences, check if user's translation captures the essence (more lenient)
+    const correct = mode === 'sentences'
+      ? userGuess.length > 5 && (
+          alternateAnswers.some(answer => userGuess.includes(answer.slice(0, 10))) ||
+          alternateAnswers.some(answer => answer.includes(userGuess.slice(0, 10)))
+        )
+      : alternateAnswers.some(answer => userGuess === answer);
 
     setIsCorrect(correct);
     setShowResult(true);
@@ -44,23 +60,27 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
 
     if (correct) {
       setStreak((s) => s + 1);
-      // Remove from errors if it exists there
-      setErrors((prev) => prev.filter((e) => e.ro !== currentCard.ro));
+      // Remove from errors if it exists there (only for words mode)
+      if (mode === 'words') {
+        setErrors((prev) => prev.filter((e) => e.ro !== currentCard.ro));
+      }
     } else {
       setStreak(0);
-      // Add to error garden or increment count
-      const existingError = errors.find((e) => e.ro === currentCard.ro);
-      if (existingError) {
-        setErrors((prev) =>
-          prev.map((e) =>
-            e.ro === currentCard.ro ? { ...e, wrongCount: e.wrongCount + 1 } : e
-          )
-        );
-      } else {
-        setErrors((prev) => [
-          ...prev,
-          { ...currentCard, wrongCount: 1, addedAt: Date.now() },
-        ]);
+      // Add to error garden or increment count (only for words mode)
+      if (mode === 'words') {
+        const existingError = errors.find((e) => e.ro === currentCard.ro);
+        if (existingError) {
+          setErrors((prev) =>
+            prev.map((e) =>
+              e.ro === currentCard.ro ? { ...e, wrongCount: e.wrongCount + 1 } : e
+            )
+          );
+        } else {
+          setErrors((prev) => [
+            ...prev,
+            { ...currentCard, wrongCount: 1, addedAt: Date.now() },
+          ]);
+        }
       }
     }
   };
@@ -139,13 +159,42 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             )}
           </div>
 
+          {/* Mode Toggle */}
+          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 mb-6">
+            <p className="text-sm text-slate-400 mb-3 text-center">Practice Mode</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setMode('words')}
+                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  mode === 'words'
+                    ? 'bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                <BookOpen size={18} />
+                Words
+              </button>
+              <button
+                onClick={() => setMode('sentences')}
+                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  mode === 'sentences'
+                    ? 'bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                <MessageSquare size={18} />
+                Sentences
+              </button>
+            </div>
+          </div>
+
           {/* How It Works */}
           <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 mb-6">
             <h3 className="text-lg font-semibold text-white mb-3">The Method</h3>
             <ol className="text-slate-300 space-y-3 text-sm">
               <li className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">1</span>
-                <span>See a Romanian word</span>
+                <span>See a Romanian {mode === 'words' ? 'word' : 'sentence'}</span>
               </li>
               <li className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">2</span>
@@ -155,14 +204,18 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                 <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">3</span>
                 <span>Check your answer</span>
               </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">4</span>
-                <span>Wrong guesses go to your garden 🌱</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">5</span>
-                <span>Garden words appear more often</span>
-              </li>
+              {mode === 'words' && (
+                <>
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">4</span>
+                    <span>Wrong guesses go to your garden</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold">5</span>
+                    <span>Garden words appear more often</span>
+                  </li>
+                </>
+              )}
             </ol>
           </div>
 
@@ -175,9 +228,12 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             <ArrowRight size={20} />
           </button>
 
-          {/* Word count */}
+          {/* Item count */}
           <p className="text-center text-slate-500 text-sm mt-4">
-            {VOCABULARY_DATABASE.length} words in the database
+            {mode === 'words'
+              ? `${VOCABULARY_DATABASE.length} words in the database`
+              : `${ALL_SENTENCES.length} sentences from Tatoeba`
+            }
           </p>
         </div>
       </div>
@@ -237,9 +293,11 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
               ))}
             </div>
 
-            <p className="text-slate-400 text-sm mb-2">What does this mean?</p>
-            <p className="text-5xl font-bold text-white mb-6 font-display">
-              {currentCard?.ro}
+            <p className="text-slate-400 text-sm mb-2">
+              {mode === 'sentences' ? 'Translate this sentence:' : 'What does this mean?'}
+            </p>
+            <p className={`font-bold text-white mb-6 ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
+              {currentCard?.romanian || currentCard?.ro}
             </p>
 
             {!showResult ? (
@@ -285,13 +343,15 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                         Your guess:{' '}
                         <span className="line-through opacity-70">{guess}</span>
                       </p>
-                      <p className="text-white text-2xl font-bold">
-                        {currentCard?.en}
+                      <p className={`text-white font-bold ${mode === 'sentences' ? 'text-lg' : 'text-2xl'}`}>
+                        {currentCard?.english || currentCard?.en}
                       </p>
-                      <div className="flex items-center justify-center gap-2 mt-3 text-rose-300">
-                        <Flower2 size={16} />
-                        <span className="text-sm">Added to your garden</span>
-                      </div>
+                      {mode === 'words' && (
+                        <div className="flex items-center justify-center gap-2 mt-3 text-rose-300">
+                          <Flower2 size={16} />
+                          <span className="text-sm">Added to your garden</span>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

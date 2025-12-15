@@ -20,14 +20,40 @@ const INITIAL_STATS = {
   totalSessions: 0,
 };
 
+// One-time migration from bc-* to cl-* localStorage keys
+function migrateLocalStorage() {
+  if (typeof window === 'undefined') return;
+
+  // Check if migration is needed (old keys exist, new keys don't)
+  const oldStats = localStorage.getItem('bc-stats');
+  const oldErrors = localStorage.getItem('bc-errors');
+  const newStats = localStorage.getItem('cl-stats');
+  const newErrors = localStorage.getItem('cl-errors');
+
+  // Migrate stats if old exists and new doesn't
+  if (oldStats && !newStats) {
+    localStorage.setItem('cl-stats', oldStats);
+    localStorage.removeItem('bc-stats');
+  }
+
+  // Migrate errors if old exists and new doesn't
+  if (oldErrors && !newErrors) {
+    localStorage.setItem('cl-errors', oldErrors);
+    localStorage.removeItem('bc-errors');
+  }
+}
+
+// Run migration on app load
+migrateLocalStorage();
+
 function AppContent() {
   // Current view state
   const [currentView, setCurrentView] = useState('home');
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Persistent state
-  const [stats, setStats] = useLocalStorage('bc-stats', INITIAL_STATS);
-  const [errors, setErrors] = useLocalStorage('bc-errors', []);
+  // Persistent state - using cl- prefix (ChaosLingua)
+  const [stats, setStats] = useLocalStorage('cl-stats', INITIAL_STATS);
+  const [errors, setErrors] = useLocalStorage('cl-errors', []);
 
   // Auth and sync
   const { user } = useAuth();

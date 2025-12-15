@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Shuffle, Clock, Sparkles, ArrowRight, X } from 'lucide-react';
+import { Shuffle, Clock, Sparkles, ArrowRight, X, Video, ChefHat } from 'lucide-react';
 import ContentEmbed from './ContentEmbed';
+import RecipeCard from './RecipeCard';
 import Timer from './Timer';
 import { useTimer } from '../hooks/useStorage';
 import { getContentBySessionType, getRandomContent } from '../data/content';
+import { getRandomRecipe, ROMANIAN_RECIPES } from '../data/recipes';
 
 const SESSION_DURATIONS = [
   { minutes: 5, label: '5 min', description: 'Quick burst' },
@@ -14,8 +16,10 @@ const SESSION_DURATIONS = [
 export default function ChaosEngineView({ updateStats }) {
   const [sessionDuration, setSessionDuration] = useState(15 * 60);
   const [currentContent, setCurrentContent] = useState(null);
+  const [currentRecipe, setCurrentRecipe] = useState(null);
   const [sessionState, setSessionState] = useState('setup'); // 'setup' | 'active' | 'reflection'
   const [reflection, setReflection] = useState('');
+  const [mode, setMode] = useState('media'); // 'media' | 'recipe'
 
   const chaosContent = getContentBySessionType('chaos_window');
 
@@ -31,15 +35,23 @@ export default function ChaosEngineView({ updateStats }) {
   const timer = useTimer(sessionDuration, handleSessionComplete);
 
   const startSession = () => {
-    const randomContent = getRandomContent((c) => c.sessionTypes.includes('chaos_window'));
-    setCurrentContent(randomContent);
+    if (mode === 'recipe') {
+      setCurrentRecipe(getRandomRecipe());
+    } else {
+      const randomContent = getRandomContent((c) => c.sessionTypes.includes('chaos_window'));
+      setCurrentContent(randomContent);
+    }
     setSessionState('active');
     timer.start();
   };
 
   const shuffleContent = () => {
-    const randomContent = getRandomContent((c) => c.sessionTypes.includes('chaos_window'));
-    setCurrentContent(randomContent);
+    if (mode === 'recipe') {
+      setCurrentRecipe(getRandomRecipe());
+    } else {
+      const randomContent = getRandomContent((c) => c.sessionTypes.includes('chaos_window'));
+      setCurrentContent(randomContent);
+    }
   };
 
   const endEarly = () => {
@@ -62,6 +74,7 @@ export default function ChaosEngineView({ updateStats }) {
     setReflection('');
     setSessionState('setup');
     setCurrentContent(null);
+    setCurrentRecipe(null);
     timer.reset();
   };
 
@@ -103,6 +116,41 @@ export default function ChaosEngineView({ updateStats }) {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Mode Toggle */}
+          <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 mb-6">
+            <p className="text-sm text-slate-400 mb-3 text-center">Content Type</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setMode('media')}
+                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  mode === 'media'
+                    ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                <Video size={18} />
+                Video/Audio
+              </button>
+              <button
+                onClick={() => setMode('recipe')}
+                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  mode === 'recipe'
+                    ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                <ChefHat size={18} />
+                Recipes
+              </button>
+            </div>
+            <p className="text-center text-slate-500 text-xs mt-3">
+              {mode === 'media'
+                ? `${chaosContent.length} videos and audio`
+                : `${ROMANIAN_RECIPES.length} traditional recipes`
+              }
+            </p>
           </div>
 
           {/* Instructions */}
@@ -181,8 +229,13 @@ export default function ChaosEngineView({ updateStats }) {
           {/* Session Summary */}
           <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/50 mb-6">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Content watched:</span>
-              <span className="text-white truncate ml-4">{currentContent?.title || 'Various'}</span>
+              <span className="text-slate-400">Content {mode === 'recipe' ? 'explored' : 'watched'}:</span>
+              <span className="text-white truncate ml-4">
+                {mode === 'recipe'
+                  ? currentRecipe?.title?.en || currentRecipe?.title?.ro || 'Various'
+                  : currentContent?.title || 'Various'
+                }
+              </span>
             </div>
             <div className="flex justify-between text-sm mt-2">
               <span className="text-slate-400">Time spent:</span>
@@ -233,7 +286,11 @@ export default function ChaosEngineView({ updateStats }) {
         </div>
 
         {/* Content */}
-        <ContentEmbed content={currentContent} />
+        {mode === 'recipe' && currentRecipe ? (
+          <RecipeCard recipe={currentRecipe} />
+        ) : (
+          <ContentEmbed content={currentContent} />
+        )}
 
         {/* Controls */}
         <div className="flex gap-3 mt-6">
@@ -242,7 +299,7 @@ export default function ChaosEngineView({ updateStats }) {
             className="flex-1 py-3 bg-slate-700 rounded-xl text-white font-medium hover:bg-slate-600 transition-colors flex items-center justify-center gap-2"
           >
             <Shuffle size={18} />
-            Shuffle
+            {mode === 'recipe' ? 'New Recipe' : 'Shuffle'}
           </button>
           <button
             onClick={endEarly}

@@ -173,8 +173,8 @@ export default function ProgressView({ stats, errors, setErrors }) {
               if (window.confirm('Reset all progress? This cannot be undone.')) {
                 setErrors([]);
                 // Note: Would need to pass setStats to fully reset
-                window.localStorage.removeItem('bc-stats');
-                window.localStorage.removeItem('bc-errors');
+                window.localStorage.removeItem('cl-stats');
+                window.localStorage.removeItem('cl-errors');
                 window.location.reload();
               }
             }}

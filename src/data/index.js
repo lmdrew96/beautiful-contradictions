@@ -30,6 +30,8 @@ export {
 // Tatoeba sentences exports
 export {
   TATOEBA_BEGINNER,
+  TATOEBA_INTERMEDIATE,
+  TATOEBA_ADVANCED,
   loadIntermediate,
   loadAdvanced,
   getAllSentences,
