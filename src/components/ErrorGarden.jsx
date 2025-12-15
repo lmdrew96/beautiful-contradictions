@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare, Trash2, ChevronDown, ChevronUp, Volume2, Loader2 } from 'lucide-react';
 import { getWeightedRandomVocab, VOCABULARY_DATABASE } from '../data/vocabulary';
 import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED } from '../data/tatoeba';
 
@@ -91,7 +91,26 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [mode, setMode] = useState('words'); // 'words' | 'sentences'
   const [sessionStartTime, setSessionStartTime] = useState(null);
   const [showAllWords, setShowAllWords] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const inputRef = useRef(null);
+  const audioRef = useRef(null);
+
+  const playAudio = useCallback(() => {
+    if (!currentCard?.audioUrl || isPlayingAudio) return;
+
+    setIsPlayingAudio(true);
+
+    // Create new audio element or reuse existing
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    audioRef.current = new Audio(currentCard.audioUrl);
+
+    audioRef.current.onended = () => setIsPlayingAudio(false);
+    audioRef.current.onerror = () => setIsPlayingAudio(false);
+
+    audioRef.current.play().catch(() => setIsPlayingAudio(false));
+  }, [currentCard?.audioUrl, isPlayingAudio]);
 
   const removeError = (ro) => {
     setErrors((prev) => prev.filter((e) => e.ro !== ro));
@@ -106,6 +125,13 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   };
 
   const nextCard = useCallback(() => {
+    // Stop any playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setIsPlayingAudio(false);
+
     let nextItem;
     if (mode === 'sentences') {
       nextItem = getRandomSentence(ALL_SENTENCES);
@@ -426,9 +452,26 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             <p className="text-text-muted text-sm mb-2">
               {mode === 'sentences' ? 'Translate this sentence:' : 'What does this mean?'}
             </p>
-            <p className={`font-bold text-text-primary mb-6 ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
-              {currentCard?.romanian || currentCard?.ro}
-            </p>
+            <div className="mb-6">
+              <p className={`font-bold text-text-primary ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
+                {currentCard?.romanian || currentCard?.ro}
+              </p>
+              {mode === 'sentences' && currentCard?.audioUrl && (
+                <button
+                  onClick={playAudio}
+                  disabled={isPlayingAudio}
+                  className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-bg-tertiary hover:bg-accent/20 rounded-lg text-text-secondary hover:text-accent transition-colors disabled:opacity-50"
+                  title="Play audio"
+                >
+                  {isPlayingAudio ? (
+                    <Loader2 size={18} className="animate-spin" />
+                  ) : (
+                    <Volume2 size={18} />
+                  )}
+                  <span className="text-sm">Listen</span>
+                </button>
+              )}
+            </div>
 
             {!showResult ? (
               <div>
@@ -485,11 +528,26 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                     </div>
                   )}
                 </div>
+                {mode === 'sentences' && currentCard?.audioUrl && (
+                  <button
+                    onClick={playAudio}
+                    disabled={isPlayingAudio}
+                    className="mb-4 inline-flex items-center gap-2 px-4 py-2 bg-bg-tertiary hover:bg-accent/20 rounded-lg text-text-secondary hover:text-accent transition-colors disabled:opacity-50"
+                    title="Play audio"
+                  >
+                    {isPlayingAudio ? (
+                      <Loader2 size={18} className="animate-spin" />
+                    ) : (
+                      <Volume2 size={18} />
+                    )}
+                    <span className="text-sm">Listen again</span>
+                  </button>
+                )}
                 <button
                   onClick={nextCard}
                   className="w-full py-3 bg-bg-tertiary rounded-xl text-text-primary font-medium hover:bg-bg-secondary transition-colors flex items-center justify-center gap-2"
                 >
-                  Next Word
+                  Next {mode === 'sentences' ? 'Sentence' : 'Word'}
                   <ArrowRight size={18} />
                 </button>
               </div>
