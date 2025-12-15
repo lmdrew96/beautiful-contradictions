@@ -27,14 +27,11 @@ export {
   getWeightedRandomVocab,
 } from './vocabulary';
 
-// Tatoeba sentences exports
+// Tatoeba sentences exports (consolidated: beginner/intermediate audio-only)
 export {
   TATOEBA_BEGINNER,
   TATOEBA_INTERMEDIATE,
   TATOEBA_ADVANCED,
-  TATOEBA_BEGINNER_EXTENDED,
-  TATOEBA_INTERMEDIATE_EXTENDED,
-  TATOEBA_ADVANCED_EXTENDED,
   loadIntermediate,
   loadAdvanced,
   getAllSentences,
