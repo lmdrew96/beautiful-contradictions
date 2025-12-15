@@ -1,6 +1,6 @@
 {
   "name": "chaoslingua",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Structured chaos for language learning. Your mistakes are your map.",
   "type": "module",
   "scripts": {

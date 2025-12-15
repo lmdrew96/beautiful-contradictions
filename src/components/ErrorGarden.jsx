@@ -93,24 +93,25 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [showAllWords, setShowAllWords] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const inputRef = useRef(null);
-  const audioRef = useRef(null);
 
   const playAudio = useCallback(() => {
-    if (!currentCard?.audioUrl || isPlayingAudio) return;
+    const text = currentCard?.romanian || currentCard?.ro;
+    if (!text || isPlayingAudio) return;
+
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
 
     setIsPlayingAudio(true);
 
-    // Create new audio element or reuse existing
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    audioRef.current = new Audio(currentCard.audioUrl);
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ro-RO';
+    utterance.rate = 0.9; // Slightly slower for learning
 
-    audioRef.current.onended = () => setIsPlayingAudio(false);
-    audioRef.current.onerror = () => setIsPlayingAudio(false);
+    utterance.onend = () => setIsPlayingAudio(false);
+    utterance.onerror = () => setIsPlayingAudio(false);
 
-    audioRef.current.play().catch(() => setIsPlayingAudio(false));
-  }, [currentCard?.audioUrl, isPlayingAudio]);
+    window.speechSynthesis.speak(utterance);
+  }, [currentCard?.romanian, currentCard?.ro, isPlayingAudio]);
 
   const removeError = (ro) => {
     setErrors((prev) => prev.filter((e) => e.ro !== ro));
@@ -125,11 +126,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   };
 
   const nextCard = useCallback(() => {
-    // Stop any playing audio
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    // Stop any ongoing speech
+    window.speechSynthesis.cancel();
     setIsPlayingAudio(false);
 
     let nextItem;
@@ -456,12 +454,12 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
               <p className={`font-bold text-text-primary ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
                 {currentCard?.romanian || currentCard?.ro}
               </p>
-              {mode === 'sentences' && currentCard?.audioUrl && (
+              {currentCard && (
                 <button
                   onClick={playAudio}
                   disabled={isPlayingAudio}
                   className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-bg-tertiary hover:bg-accent/20 rounded-lg text-text-secondary hover:text-accent transition-colors disabled:opacity-50"
-                  title="Play audio"
+                  title="Play audio (Web Speech)"
                 >
                   {isPlayingAudio ? (
                     <Loader2 size={18} className="animate-spin" />
@@ -528,12 +526,12 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                     </div>
                   )}
                 </div>
-                {mode === 'sentences' && currentCard?.audioUrl && (
+                {currentCard && (
                   <button
                     onClick={playAudio}
                     disabled={isPlayingAudio}
                     className="mb-4 inline-flex items-center gap-2 px-4 py-2 bg-bg-tertiary hover:bg-accent/20 rounded-lg text-text-secondary hover:text-accent transition-colors disabled:opacity-50"
-                    title="Play audio"
+                    title="Play audio (Web Speech)"
                   >
                     {isPlayingAudio ? (
                       <Loader2 size={18} className="animate-spin" />
