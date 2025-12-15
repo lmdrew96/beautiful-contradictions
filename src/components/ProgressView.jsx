@@ -1,7 +1,10 @@
 import React from 'react';
-import { BarChart3, Flower2, Shuffle, CloudFog, Hammer, Trash2, Award, BookOpen } from 'lucide-react';
+import { BarChart3, Flower2, Shuffle, CloudFog, Hammer, Trash2, Award, BookOpen, RotateCcw } from 'lucide-react';
+import { useDifficulty } from '../contexts/DifficultyContext';
+import { getDifficultyLabel, getDifficultyColor, getDifficultyBgColor } from '../utils/difficulty';
 
 export default function ProgressView({ stats, errors, setErrors }) {
+  const { levels, getProgress, resetLevels } = useDifficulty();
   const clearErrorGarden = () => {
     if (window.confirm('Clear all errors from your garden? This cannot be undone.')) {
       setErrors([]);
@@ -64,6 +67,55 @@ export default function ProgressView({ stats, errors, setErrors }) {
             borderColor="border-border"
             textColor="text-forge-accent"
           />
+        </div>
+
+        {/* Your Levels */}
+        <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-text-primary">Your Levels</h3>
+            <button
+              onClick={() => {
+                if (window.confirm('Reset all levels to starting values?')) {
+                  resetLevels();
+                }
+              }}
+              className="text-xs text-text-muted hover:text-text-primary transition-colors flex items-center gap-1"
+            >
+              <RotateCcw size={12} />
+              Reset
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <LevelRow
+              icon={Shuffle}
+              label="Chaos"
+              level={levels.chaos}
+              progress={getProgress('chaos')}
+              color="text-chaos-accent"
+            />
+            <LevelRow
+              icon={Flower2}
+              label="Garden"
+              level={levels.garden}
+              progress={getProgress('garden')}
+              color="text-garden-accent"
+            />
+            <LevelRow
+              icon={CloudFog}
+              label="Fog"
+              level={levels.fog}
+              progress={getProgress('fog')}
+              color="text-fog-accent"
+            />
+            <LevelRow
+              icon={Hammer}
+              label="Forge"
+              level={levels.forge}
+              progress={getProgress('forge')}
+              color="text-forge-accent"
+            />
+          </div>
         </div>
 
         {/* Learning Stats */}
@@ -197,11 +249,12 @@ export default function ProgressView({ stats, errors, setErrors }) {
         <div className="mt-8 text-center">
           <button
             onClick={() => {
-              if (window.confirm('Reset all progress? This cannot be undone.')) {
+              if (window.confirm('Reset all progress including levels? This cannot be undone.')) {
                 setErrors([]);
-                // Note: Would need to pass setStats to fully reset
+                resetLevels();
                 window.localStorage.removeItem('cl-stats');
                 window.localStorage.removeItem('cl-errors');
+                window.localStorage.removeItem('cl-difficulty');
                 window.location.reload();
               }
             }}
@@ -223,6 +276,36 @@ function StatCard({ icon: Icon, value, label, gradient, borderColor, textColor }
       </div>
       <div className={`text-3xl font-bold ${textColor}`}>{value}</div>
       <div className="text-text-muted text-sm">{label}</div>
+    </div>
+  );
+}
+
+function LevelRow({ icon: Icon, label, level, progress, color }) {
+  const levelLabel = getDifficultyLabel(level);
+
+  return (
+    <div className="flex items-center gap-4">
+      <div className={`p-2 rounded-lg bg-bg-tertiary ${color}`}>
+        <Icon size={18} />
+      </div>
+      <div className="flex-1">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-text-primary font-medium">{label}</span>
+          <div className="flex items-center gap-2">
+            <span className={`text-sm font-bold ${color}`}>Lv {level}</span>
+            <span className="text-xs text-text-muted">{levelLabel}</span>
+          </div>
+        </div>
+        <div className="h-2 bg-bg-tertiary rounded-full overflow-hidden">
+          <div
+            className={`h-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-300`}
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-xs text-text-muted mt-1">
+          {progress === 100 ? 'Ready to level up!' : progress > 0 ? `${progress}% to next level` : 'Keep practicing'}
+        </p>
+      </div>
     </div>
   );
 }

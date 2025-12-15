@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen } from 'lucide-react';
+import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen, Zap } from 'lucide-react';
 import ContentEmbed from './ContentEmbed';
 import StoryReader from './StoryReader';
 import { formatTime } from '../hooks/useStorage';
 import { getRandomContent, getContentByDifficulty } from '../data/content';
 import { getRandomStory, ROMANIAN_STORIES } from '../data/stories';
+import { useDifficulty } from '../contexts/DifficultyContext';
+import { getDifficultyLabel } from '../utils/difficulty';
 
 export default function FogMachineView({ updateStats }) {
   const [sessionActive, setSessionActive] = useState(false);
@@ -15,6 +17,10 @@ export default function FogMachineView({ updateStats }) {
   const [timeInFog, setTimeInFog] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [mode, setMode] = useState('media'); // 'media' | 'reading'
+
+  // Difficulty context - fog level is managed separately but we track sessions
+  const { getLevel, recordSession } = useDifficulty();
+  const recommendedLevel = Math.min(10, getLevel('fog') + 1); // Fog should be slightly above comfort
 
   // Timer effect
   useEffect(() => {
@@ -88,6 +94,8 @@ export default function FogMachineView({ updateStats }) {
       totalSessions: prev.totalSessions + 1,
       lastSessionDate: new Date().toISOString().split('T')[0],
     }));
+    // Record session for level tracking
+    recordSession('fog', fogLevel, minutesSpent);
     setSessionActive(false);
     setCurrentContent(null);
     setCurrentStory(null);
@@ -122,9 +130,23 @@ export default function FogMachineView({ updateStats }) {
 
           {/* Fog Level Selector */}
           <div className="bg-bg-secondary rounded-2xl p-6 border border-border mb-6">
-            <h3 className="text-lg font-semibold text-text-primary mb-2">Fog Density</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-semibold text-text-primary">Fog Density</h3>
+              {fogLevel !== recommendedLevel && (
+                <button
+                  onClick={() => setFogLevel(recommendedLevel)}
+                  className="flex items-center gap-1 px-2 py-1 text-xs bg-teal-600/20 text-teal-600 dark:text-teal-400 rounded-lg hover:bg-teal-600/30 transition-colors"
+                >
+                  <Zap size={12} />
+                  Use Lv {recommendedLevel}
+                </button>
+              )}
+            </div>
             <p className="text-text-muted text-sm mb-4">
               How challenging should the content be?
+              {fogLevel === recommendedLevel && (
+                <span className="ml-2 text-teal-600 dark:text-teal-400">(Recommended)</span>
+              )}
             </p>
 
             {/* Slider */}

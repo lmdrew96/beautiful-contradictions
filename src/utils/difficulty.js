@@ -162,6 +162,119 @@ export const isDifficultyAppropriate = (contentDifficulty, userLevel, mode = 'co
   return Math.abs(contentDifficulty - userLevel) <= 2;
 };
 
+// Configuration constants for level calculation
+export const DIFFICULTY_CONFIG = {
+  INCREASE_THRESHOLD: 0.80,  // 80% accuracy triggers level increase
+  DECREASE_THRESHOLD: 0.50,  // 50% accuracy triggers level decrease
+  MIN_ATTEMPTS_FOR_ADJUSTMENT: 10,
+  MAX_LEVEL_CHANGE: 1,
+  EASY_OFFSET: -2,
+  HARD_OFFSET: 2,
+  CONTENT_RANGE: 2,  // Show content within +/- 2 of effective level
+  WINDOW_SIZE: 50,   // Rolling window for performance tracking
+};
+
+/**
+ * Calculate user level based on recent performance
+ * Uses weighted accuracy with recency bias
+ * @param {Array} attempts - Array of { difficulty, correct, timestamp }
+ * @param {number} currentLevel - Current level 1-10
+ * @returns {number} New level 1-10
+ */
+export const calculateLevelFromPerformance = (attempts = [], currentLevel = 3) => {
+  if (!attempts || attempts.length < DIFFICULTY_CONFIG.MIN_ATTEMPTS_FOR_ADJUSTMENT) {
+    return currentLevel;
+  }
+
+  // Get recent attempts (last WINDOW_SIZE)
+  const recentAttempts = attempts.slice(-DIFFICULTY_CONFIG.WINDOW_SIZE);
+
+  // Calculate weighted accuracy (recent attempts and higher difficulty weighted more)
+  let weightedCorrect = 0;
+  let totalWeight = 0;
+
+  recentAttempts.forEach((attempt, index) => {
+    const recencyWeight = (index + 1) / recentAttempts.length;
+    const difficultyWeight = attempt.difficulty / 10;
+    const weight = recencyWeight * (0.5 + difficultyWeight * 0.5);
+
+    totalWeight += weight;
+    if (attempt.correct) {
+      weightedCorrect += weight;
+    }
+  });
+
+  const weightedAccuracy = totalWeight > 0 ? weightedCorrect / totalWeight : 0.5;
+
+  // Determine level adjustment
+  if (weightedAccuracy >= DIFFICULTY_CONFIG.INCREASE_THRESHOLD) {
+    return Math.min(10, currentLevel + DIFFICULTY_CONFIG.MAX_LEVEL_CHANGE);
+  } else if (weightedAccuracy <= DIFFICULTY_CONFIG.DECREASE_THRESHOLD) {
+    return Math.max(1, currentLevel - DIFFICULTY_CONFIG.MAX_LEVEL_CHANGE);
+  }
+
+  return currentLevel;
+};
+
+/**
+ * Get effective level considering override (easy/normal/hard)
+ * @param {number} calculatedLevel - Base level 1-10
+ * @param {string} override - 'easy' | 'normal' | 'hard'
+ * @returns {number} Adjusted level 1-10
+ */
+export const getEffectiveLevel = (calculatedLevel, override = 'normal') => {
+  switch (override) {
+    case 'easy':
+      return Math.max(1, calculatedLevel + DIFFICULTY_CONFIG.EASY_OFFSET);
+    case 'hard':
+      return Math.min(10, calculatedLevel + DIFFICULTY_CONFIG.HARD_OFFSET);
+    default:
+      return calculatedLevel;
+  }
+};
+
+/**
+ * Filter content array by effective level with range
+ * @param {Array} content - Array of items with difficulty property
+ * @param {number} effectiveLevel - Target level 1-10
+ * @param {number} range - Range above/below to include (default 2)
+ * @returns {Array} Filtered content
+ */
+export const filterContentByLevel = (content, effectiveLevel, range = DIFFICULTY_CONFIG.CONTENT_RANGE) => {
+  if (!content || !Array.isArray(content)) return [];
+
+  const min = Math.max(1, effectiveLevel - range);
+  const max = Math.min(10, effectiveLevel + range);
+
+  return content.filter(item => {
+    const diff = item.difficulty || 5;
+    return diff >= min && diff <= max;
+  });
+};
+
+/**
+ * Calculate progress toward next level (0-100%)
+ * @param {Array} attempts - Recent attempts
+ * @param {number} currentLevel - Current level
+ * @returns {number} Progress percentage 0-100
+ */
+export const getLevelProgress = (attempts = [], currentLevel = 3) => {
+  if (!attempts || attempts.length < 5) return 0;
+
+  const recentAttempts = attempts.slice(-DIFFICULTY_CONFIG.WINDOW_SIZE);
+  const correctCount = recentAttempts.filter(a => a.correct).length;
+  const accuracy = correctCount / recentAttempts.length;
+
+  // Map accuracy to progress
+  // Below 50% = 0%, 50-80% = 0-100%, above 80% = 100%
+  if (accuracy <= DIFFICULTY_CONFIG.DECREASE_THRESHOLD) return 0;
+  if (accuracy >= DIFFICULTY_CONFIG.INCREASE_THRESHOLD) return 100;
+
+  const range = DIFFICULTY_CONFIG.INCREASE_THRESHOLD - DIFFICULTY_CONFIG.DECREASE_THRESHOLD;
+  const progress = (accuracy - DIFFICULTY_CONFIG.DECREASE_THRESHOLD) / range;
+  return Math.round(progress * 100);
+};
+
 export default {
   normalizeDifficulty,
   calculateSentenceDifficulty,
@@ -170,4 +283,9 @@ export default {
   getDifficultyBgColor,
   getUserDifficultyLevel,
   isDifficultyAppropriate,
+  calculateLevelFromPerformance,
+  getEffectiveLevel,
+  filterContentByLevel,
+  getLevelProgress,
+  DIFFICULTY_CONFIG,
 };

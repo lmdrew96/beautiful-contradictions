@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Home, Shuffle, Flower2, CloudFog, Hammer, BarChart3, Settings } from 'lucide-react';
 import ProfileMenu from './ProfileMenu';
 import SettingsModal from './SettingsModal';
+import LevelIndicator from './LevelIndicator';
 
 const navItems = [
   { id: 'home', label: 'Home', icon: Home },
@@ -46,8 +47,9 @@ export default function Navigation({ currentView, setCurrentView, syncStatus, on
               })}
             </div>
 
-            {/* Settings & Profile - Desktop only */}
+            {/* Level Indicator & Settings & Profile - Desktop only */}
             <div className="hidden md:flex items-center gap-2 ml-4">
+              <LevelIndicator currentView={currentView} />
               <button
                 onClick={() => setShowSettings(true)}
                 className="p-2 rounded-lg bg-bg-tertiary text-text-secondary hover:text-text-primary transition-colors"
@@ -63,8 +65,9 @@ export default function Navigation({ currentView, setCurrentView, syncStatus, on
           </div>
         </div>
 
-        {/* Mobile Profile & Settings Button - Fixed position top right */}
+        {/* Mobile Level & Settings - Fixed position top right */}
         <div className="md:hidden fixed top-4 right-4 z-50 flex items-center gap-2">
+          <LevelIndicator currentView={currentView} compact />
           <button
             onClick={() => setShowSettings(true)}
             className="p-2 rounded-lg bg-bg-secondary border border-border text-text-secondary hover:text-text-primary transition-colors"

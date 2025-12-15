@@ -8,12 +8,15 @@
  * - Translation: English to Romanian writing practice
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
 import { Hammer, ArrowRight, Check, X, RotateCcw, Sparkles } from 'lucide-react';
-import { TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, getRandomSentence } from '../data/tatoeba';
+import { TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED, getRandomSentence } from '../data/tatoeba';
+import { useDifficulty } from '../contexts/DifficultyContext';
+import { filterContentByLevel } from '../utils/difficulty';
+import DifficultyToggle from './DifficultyToggle';
 
-// Use beginner and intermediate sentences for production practice
-const FORGE_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE];
+// All sentences for production practice
+const ALL_FORGE_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
 
 // Shuffle array helper
 const shuffleArray = (arr) => {
@@ -68,17 +71,31 @@ export default function WordForge({ updateStats }) {
   const [streak, setStreak] = useState(0);
   const [sessionStart, setSessionStart] = useState(null);
   const [sessionCorrect, setSessionCorrect] = useState(0);
+  const [currentDifficulty, setCurrentDifficulty] = useState(5);
   const inputRef = useRef(null);
 
+  // Difficulty context
+  const { getEffectiveLevel, recordAttempt } = useDifficulty();
+  const effectiveLevel = getEffectiveLevel('forge');
+
+  // Filter sentences by level
+  const filteredSentences = useMemo(() => {
+    return filterContentByLevel(ALL_FORGE_SENTENCES, effectiveLevel);
+  }, [effectiveLevel]);
+
   const getNewChallenge = useCallback(() => {
-    const sentence = getRandomSentence(FORGE_SENTENCES);
+    const pool = filteredSentences.length > 0 ? filteredSentences : ALL_FORGE_SENTENCES;
+    const sentence = getRandomSentence(pool);
+    setCurrentDifficulty(sentence?.difficulty || 5);
 
     if (mode === 'blank') {
       let challenge = createBlankChallenge(sentence);
       // Try a few times if the sentence is too short
       let attempts = 0;
       while (!challenge && attempts < 5) {
-        challenge = createBlankChallenge(getRandomSentence(FORGE_SENTENCES));
+        const newSentence = getRandomSentence(pool);
+        challenge = createBlankChallenge(newSentence);
+        if (challenge) setCurrentDifficulty(newSentence?.difficulty || 5);
         attempts++;
       }
       return challenge || { display: sentence.romanian, answer: '', full: sentence.romanian, english: sentence.english };
@@ -88,7 +105,9 @@ export default function WordForge({ updateStats }) {
       let challenge = createBuilderChallenge(sentence);
       let attempts = 0;
       while (!challenge && attempts < 5) {
-        challenge = createBuilderChallenge(getRandomSentence(FORGE_SENTENCES));
+        const newSentence = getRandomSentence(pool);
+        challenge = createBuilderChallenge(newSentence);
+        if (challenge) setCurrentDifficulty(newSentence?.difficulty || 5);
         attempts++;
       }
       return challenge;
@@ -102,7 +121,7 @@ export default function WordForge({ updateStats }) {
     }
 
     return null;
-  }, [mode]);
+  }, [mode, filteredSentences]);
 
   const startSession = () => {
     setSessionActive(true);
@@ -141,6 +160,9 @@ export default function WordForge({ updateStats }) {
     setIsCorrect(correct);
     setShowResult(true);
     setCompleted(c => c + 1);
+
+    // Record attempt for level calculation
+    recordAttempt('forge', currentDifficulty, correct);
 
     if (correct) {
       setSessionCorrect(c => c + 1);
@@ -248,6 +270,11 @@ export default function WordForge({ updateStats }) {
             </div>
           </div>
 
+          {/* Difficulty Toggle */}
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+            <DifficultyToggle mode="forge" />
+          </div>
+
           {/* Philosophy */}
           <div className="bg-forge-accent-soft rounded-2xl p-6 border border-forge-accent/30 mb-6">
             <h3 className="text-lg font-semibold text-text-primary mb-3">The Forge Method</h3>
@@ -277,7 +304,7 @@ export default function WordForge({ updateStats }) {
           </button>
 
           <p className="text-center text-text-muted text-sm mt-4">
-            {FORGE_SENTENCES.length} sentences available
+            {filteredSentences.length} sentences at your level ({ALL_FORGE_SENTENCES.length} total)
           </p>
         </div>
       </div>

@@ -1,11 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Shuffle, Clock, Sparkles, ArrowRight, X, Video, ChefHat } from 'lucide-react';
 import ContentEmbed from './ContentEmbed';
 import RecipeCard from './RecipeCard';
 import Timer from './Timer';
 import { useTimer } from '../hooks/useStorage';
-import { getContentBySessionType, getRandomContent } from '../data/content';
+import { getContentBySessionType, getRandomContent, CONTENT_DATABASE } from '../data/content';
 import { getRandomRecipe, ROMANIAN_RECIPES } from '../data/recipes';
+import { useDifficulty } from '../contexts/DifficultyContext';
+import { filterContentByLevel } from '../utils/difficulty';
+import DifficultyToggle from './DifficultyToggle';
 
 const SESSION_DURATIONS = [
   { minutes: 5, label: '5 min', description: 'Quick burst' },
@@ -21,7 +24,22 @@ export default function ChaosEngineView({ updateStats }) {
   const [reflection, setReflection] = useState('');
   const [mode, setMode] = useState('media'); // 'media' | 'recipe'
 
+  // Difficulty context
+  const { getEffectiveLevel, recordSession } = useDifficulty();
+  const effectiveLevel = getEffectiveLevel('chaos');
+
+  // Get all chaos content and filter by level
   const chaosContent = getContentBySessionType('chaos_window');
+  const filteredChaosContent = useMemo(() => {
+    const filtered = filterContentByLevel(chaosContent, effectiveLevel);
+    return filtered.length > 0 ? filtered : chaosContent;
+  }, [chaosContent, effectiveLevel]);
+
+  // Filter recipes by level too
+  const filteredRecipes = useMemo(() => {
+    const filtered = filterContentByLevel(ROMANIAN_RECIPES, effectiveLevel);
+    return filtered.length > 0 ? filtered : ROMANIAN_RECIPES;
+  }, [effectiveLevel]);
 
   const handleSessionComplete = useCallback(() => {
     setSessionState('reflection');
@@ -30,16 +48,19 @@ export default function ChaosEngineView({ updateStats }) {
       chaosMinutes: prev.chaosMinutes + Math.floor(sessionDuration / 60),
       totalSessions: prev.totalSessions + 1,
     }));
-  }, [sessionDuration, updateStats]);
+    // Record session for level tracking
+    recordSession('chaos', effectiveLevel, Math.floor(sessionDuration / 60));
+  }, [sessionDuration, updateStats, effectiveLevel, recordSession]);
 
   const timer = useTimer(sessionDuration, handleSessionComplete);
 
   const startSession = () => {
     if (mode === 'recipe') {
-      setCurrentRecipe(getRandomRecipe());
+      const pool = filteredRecipes;
+      setCurrentRecipe(pool[Math.floor(Math.random() * pool.length)]);
     } else {
-      const randomContent = getRandomContent((c) => c.sessionTypes.includes('chaos_window'));
-      setCurrentContent(randomContent);
+      const pool = filteredChaosContent;
+      setCurrentContent(pool[Math.floor(Math.random() * pool.length)]);
     }
     setSessionState('active');
     timer.start();
@@ -47,10 +68,11 @@ export default function ChaosEngineView({ updateStats }) {
 
   const shuffleContent = () => {
     if (mode === 'recipe') {
-      setCurrentRecipe(getRandomRecipe());
+      const pool = filteredRecipes;
+      setCurrentRecipe(pool[Math.floor(Math.random() * pool.length)]);
     } else {
-      const randomContent = getRandomContent((c) => c.sessionTypes.includes('chaos_window'));
-      setCurrentContent(randomContent);
+      const pool = filteredChaosContent;
+      setCurrentContent(pool[Math.floor(Math.random() * pool.length)]);
     }
   };
 
@@ -119,7 +141,7 @@ export default function ChaosEngineView({ updateStats }) {
           </div>
 
           {/* Mode Toggle */}
-          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-4">
             <p className="text-sm text-text-muted mb-3 text-center">Content Type</p>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -147,10 +169,15 @@ export default function ChaosEngineView({ updateStats }) {
             </div>
             <p className="text-center text-text-muted text-xs mt-3">
               {mode === 'media'
-                ? `${chaosContent.length} videos and audio`
-                : `${ROMANIAN_RECIPES.length} traditional recipes`
+                ? `${filteredChaosContent.length} at your level (${chaosContent.length} total)`
+                : `${filteredRecipes.length} at your level (${ROMANIAN_RECIPES.length} total)`
               }
             </p>
+          </div>
+
+          {/* Difficulty Toggle */}
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+            <DifficultyToggle mode="chaos" />
           </div>
 
           {/* Instructions */}
@@ -176,12 +203,6 @@ export default function ChaosEngineView({ updateStats }) {
             </ol>
           </div>
 
-          {/* Content Preview */}
-          <div className="bg-bg-tertiary rounded-xl p-4 border border-border mb-6">
-            <p className="text-sm text-text-muted text-center">
-              {chaosContent.length} items in the chaos pool
-            </p>
-          </div>
 
           {/* Start Button */}
           <button

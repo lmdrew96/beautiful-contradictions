@@ -4,6 +4,7 @@ import { useSupabaseSync } from './hooks/useSupabaseSync';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { SettingsProvider } from './contexts/SettingsContext';
+import { DifficultyProvider } from './contexts/DifficultyContext';
 
 // Components
 import Navigation from './components/Navigation';
@@ -14,6 +15,8 @@ import FogMachine from './components/FogMachine';
 import WordForge from './components/WordForge';
 import ProgressView from './components/ProgressView';
 import AuthModal from './components/AuthModal';
+import PlacementAssessment from './components/PlacementAssessment';
+import { useDifficulty } from './contexts/DifficultyContext';
 
 // Initial stats structure
 const INITIAL_STATS = {
@@ -68,6 +71,14 @@ function AppContent() {
   // Auth and sync
   const { user } = useAuth();
   const { syncStatus } = useSupabaseSync(user, stats, setStats, errors, setErrors);
+
+  // Difficulty context for assessment check
+  const { needsAssessment, isLoaded: difficultyLoaded } = useDifficulty();
+
+  // Show placement assessment for new users
+  if (difficultyLoaded && needsAssessment) {
+    return <PlacementAssessment />;
+  }
 
   // Render current view
   const renderView = () => {
@@ -151,9 +162,11 @@ export default function App() {
   return (
     <ThemeProvider>
       <SettingsProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
+        <DifficultyProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </DifficultyProvider>
       </SettingsProvider>
     </ThemeProvider>
   );

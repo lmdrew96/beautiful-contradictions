@@ -1,7 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare, Trash2, ChevronDown, ChevronUp, Volume2, Loader2 } from 'lucide-react';
 import { getWeightedRandomVocab, VOCABULARY_DATABASE } from '../data/vocabulary';
 import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED } from '../data/tatoeba';
+import { useDifficulty } from '../contexts/DifficultyContext';
+import { filterContentByLevel, normalizeDifficulty } from '../utils/difficulty';
+import DifficultyToggle from './DifficultyToggle';
 
 const ALL_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
 
@@ -94,6 +97,25 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const inputRef = useRef(null);
 
+  // Difficulty context
+  const { getEffectiveLevel, recordAttempt } = useDifficulty();
+  const effectiveLevel = getEffectiveLevel('garden');
+
+  // Filter vocabulary by level (vocabulary uses 1-5 scale, need to convert)
+  const filteredVocab = useMemo(() => {
+    // Convert effective level (1-10) to vocab scale range
+    const vocabLevelMin = Math.max(1, Math.floor((effectiveLevel - 2) / 2));
+    const vocabLevelMax = Math.min(5, Math.ceil((effectiveLevel + 2) / 2));
+    return VOCABULARY_DATABASE.filter(
+      v => v.difficulty >= vocabLevelMin && v.difficulty <= vocabLevelMax
+    );
+  }, [effectiveLevel]);
+
+  // Filter sentences by level
+  const filteredSentences = useMemo(() => {
+    return filterContentByLevel(ALL_SENTENCES, effectiveLevel);
+  }, [effectiveLevel]);
+
   const playAudio = useCallback(() => {
     const text = currentCard?.romanian || currentCard?.ro;
     if (!text || isPlayingAudio) return;
@@ -132,15 +154,23 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
 
     let nextItem;
     if (mode === 'sentences') {
-      nextItem = getRandomSentence(ALL_SENTENCES);
+      // Use level-filtered sentences
+      const pool = filteredSentences.length > 0 ? filteredSentences : ALL_SENTENCES;
+      nextItem = getRandomSentence(pool);
     } else {
-      nextItem = getWeightedRandomVocab(errors);
+      // 50% chance to use error word, otherwise use level-filtered vocab
+      if (errors.length > 0 && Math.random() > 0.5) {
+        nextItem = errors[Math.floor(Math.random() * errors.length)];
+      } else {
+        const pool = filteredVocab.length > 0 ? filteredVocab : VOCABULARY_DATABASE;
+        nextItem = pool[Math.floor(Math.random() * pool.length)];
+      }
     }
     setCurrentCard(nextItem);
     setGuess('');
     setShowResult(false);
     setTimeout(() => inputRef.current?.focus(), 100);
-  }, [errors, mode]);
+  }, [errors, mode, filteredSentences, filteredVocab]);
 
   const checkGuess = () => {
     if (!guess.trim() || !currentCard) return;
@@ -168,6 +198,13 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
     setIsCorrect(correct);
     setShowResult(true);
     setCardsReviewed((c) => c + 1);
+
+    // Record attempt for level calculation
+    // Normalize vocabulary difficulty (1-5) to 1-10 scale
+    const cardDifficulty = currentCard.difficulty
+      ? (currentCard.difficulty <= 5 ? currentCard.difficulty * 2 : currentCard.difficulty)
+      : 5;
+    recordAttempt('garden', cardDifficulty, correct);
 
     if (correct) {
       setStreak((s) => s + 1);
@@ -314,7 +351,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           </div>
 
           {/* Mode Toggle */}
-          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-4">
             <p className="text-sm text-text-muted mb-3 text-center">Practice Mode</p>
             <div className="grid grid-cols-2 gap-2">
               <button
@@ -340,6 +377,11 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                 Sentences
               </button>
             </div>
+          </div>
+
+          {/* Difficulty Toggle */}
+          <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
+            <DifficultyToggle mode="garden" />
           </div>
 
           {/* How It Works */}
@@ -385,8 +427,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           {/* Item count */}
           <p className="text-center text-text-muted text-sm mt-4">
             {mode === 'words'
-              ? `${VOCABULARY_DATABASE.length} words in the database`
-              : `${ALL_SENTENCES.length} sentences from Tatoeba`
+              ? `${filteredVocab.length} words at your level (${VOCABULARY_DATABASE.length} total)`
+              : `${filteredSentences.length} sentences at your level (${ALL_SENTENCES.length} total)`
             }
           </p>
         </div>
