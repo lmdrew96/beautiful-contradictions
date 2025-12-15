@@ -45,9 +45,10 @@ export default function VideoEmbed({
     setIsLoading(true);
     setShowFallback(false);
 
-    // Show fallback option after 5 seconds
+    // Show fallback option after 5 seconds and dismiss loading overlay
     const fallbackTimer = setTimeout(() => {
       setShowFallback(true);
+      setIsLoading(false);
     }, 5000);
 
     return () => clearTimeout(fallbackTimer);

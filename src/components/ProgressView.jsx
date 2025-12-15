@@ -162,7 +162,7 @@ export default function ProgressView({ stats, errors, setErrors }) {
             "The mess is the method. Your mistakes are your map."
           </p>
           <p className="text-center text-slate-500 text-sm mt-2">
-            Keep embracing beautiful contradictions.
+            Keep embracing the chaos.
           </p>
         </div>
 

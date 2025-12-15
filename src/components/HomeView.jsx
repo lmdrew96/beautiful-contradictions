@@ -43,14 +43,13 @@ export default function HomeView({ setCurrentView, stats }) {
           
           <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight">
             <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
-              Beautiful
+              Chaos
             </span>
-            <br />
-            <span className="text-white">Contradictions</span>
+            <span className="text-white">Lingua</span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-slate-300 mb-3 max-w-md mx-auto">
-            Language learning built on paradox
+            Structured chaos for language learning
           </p>
           
           <p className="text-slate-500 italic text-sm max-w-sm mx-auto">

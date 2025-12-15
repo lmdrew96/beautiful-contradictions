@@ -5,6 +5,81 @@ import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVA
 
 const ALL_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
 
+// Normalize text for comparison - handles contractions and punctuation
+const normalizeAnswer = (text) => {
+  return text
+    .toLowerCase()
+    .trim()
+    // Normalize contractions (both directions for flexibility)
+    .replace(/i'm/g, 'i am')
+    .replace(/don't/g, 'do not')
+    .replace(/doesn't/g, 'does not')
+    .replace(/didn't/g, 'did not')
+    .replace(/won't/g, 'will not')
+    .replace(/can't/g, 'cannot')
+    .replace(/couldn't/g, 'could not')
+    .replace(/wouldn't/g, 'would not')
+    .replace(/shouldn't/g, 'should not')
+    .replace(/isn't/g, 'is not')
+    .replace(/aren't/g, 'are not')
+    .replace(/wasn't/g, 'was not')
+    .replace(/weren't/g, 'were not')
+    .replace(/haven't/g, 'have not')
+    .replace(/hasn't/g, 'has not')
+    .replace(/hadn't/g, 'had not')
+    .replace(/it's/g, 'it is')
+    .replace(/that's/g, 'that is')
+    .replace(/there's/g, 'there is')
+    .replace(/what's/g, 'what is')
+    .replace(/let's/g, 'let us')
+    .replace(/they're/g, 'they are')
+    .replace(/we're/g, 'we are')
+    .replace(/you're/g, 'you are')
+    .replace(/he's/g, 'he is')
+    .replace(/she's/g, 'she is')
+    .replace(/i've/g, 'i have')
+    .replace(/you've/g, 'you have')
+    .replace(/we've/g, 'we have')
+    .replace(/they've/g, 'they have')
+    .replace(/i'll/g, 'i will')
+    .replace(/you'll/g, 'you will')
+    .replace(/he'll/g, 'he will')
+    .replace(/she'll/g, 'she will')
+    .replace(/we'll/g, 'we will')
+    .replace(/they'll/g, 'they will')
+    .replace(/i'd/g, 'i would')
+    .replace(/you'd/g, 'you would')
+    .replace(/he'd/g, 'he would')
+    .replace(/she'd/g, 'she would')
+    .replace(/we'd/g, 'we would')
+    .replace(/they'd/g, 'they would')
+    // Remove punctuation
+    .replace(/[.,!?;:'"()]/g, '')
+    // Normalize whitespace
+    .replace(/\s+/g, ' ');
+};
+
+// Check if two strings are close enough (allows 1-2 character differences)
+const isCloseEnough = (guess, answer) => {
+  if (guess === answer) return true;
+  if (Math.abs(guess.length - answer.length) > 2) return false;
+
+  // Simple edit distance check for small differences
+  let differences = 0;
+  const longer = guess.length >= answer.length ? guess : answer;
+  const shorter = guess.length < answer.length ? guess : answer;
+
+  let j = 0;
+  for (let i = 0; i < longer.length && differences <= 2; i++) {
+    if (shorter[j] !== longer[i]) {
+      differences++;
+      if (shorter.length < longer.length) continue;
+    }
+    j++;
+  }
+  return differences <= 2;
+};
+
 export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [currentCard, setCurrentCard] = useState(null);
   const [guess, setGuess] = useState('');
@@ -47,12 +122,17 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
     // Also check for alternate answers separated by /
     const alternateAnswers = correctAnswer.split('/').map(a => a.trim());
     // For sentences, check if user's translation captures the essence (more lenient)
+    // For words, use normalization and typo tolerance
     const correct = mode === 'sentences'
       ? userGuess.length > 5 && (
           alternateAnswers.some(answer => userGuess.includes(answer.slice(0, 10))) ||
           alternateAnswers.some(answer => answer.includes(userGuess.slice(0, 10)))
         )
-      : alternateAnswers.some(answer => userGuess === answer);
+      : alternateAnswers.some(answer => {
+          const normalizedGuess = normalizeAnswer(userGuess);
+          const normalizedAnswer = normalizeAnswer(answer);
+          return isCloseEnough(normalizedGuess, normalizedAnswer);
+        });
 
     setIsCorrect(correct);
     setShowResult(true);
