@@ -19,23 +19,9 @@ export default function HomeView({ setCurrentView, stats }) {
   return (
     <div className="min-h-screen pb-24 md:pt-20">
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        {/* Background effects - lighter in light mode, darker in dark mode */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/40 via-bg-primary to-pink-200/30 dark:from-purple-900/40 dark:via-bg-primary dark:to-pink-900/20" />
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-purple-300/20 dark:bg-purple-500/30 rounded-full filter blur-3xl animate-pulse" />
-          <div
-            className="absolute bottom-10 right-10 w-80 h-80 bg-pink-300/20 dark:bg-pink-500/20 rounded-full filter blur-3xl animate-pulse"
-            style={{ animationDelay: '1s' }}
-          />
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-300/10 dark:bg-indigo-500/10 rounded-full filter blur-3xl animate-pulse"
-            style={{ animationDelay: '2s' }}
-          />
-        </div>
-
+      <div>
         {/* Hero content */}
-        <div className="relative px-6 py-16 md:py-24 text-center">
+        <div className="px-6 py-16 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full border border-purple-500/30 mb-6">
             <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
             <span className="text-xs text-purple-600 dark:text-purple-300 font-medium">Learn Romanian Differently</span>
