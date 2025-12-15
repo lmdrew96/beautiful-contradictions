@@ -23,16 +23,31 @@ export { TATOEBA_BEGINNER } from './beginner';
 export { TATOEBA_INTERMEDIATE } from './intermediate';
 export { TATOEBA_ADVANCED } from './advanced';
 
+// Extended sentence sets (from Tatoeba bulk download)
+export { TATOEBA_BEGINNER_EXTENDED } from './beginner_extended';
+export { TATOEBA_INTERMEDIATE_EXTENDED } from './intermediate_extended';
+export { TATOEBA_ADVANCED_EXTENDED } from './advanced_extended';
+
 // Lazy-loaded chunks for performance optimization (if needed)
 export const loadIntermediate = () => import('./intermediate');
 export const loadAdvanced = () => import('./advanced');
 
-// Combined getter for all loaded sentences
+// Combined getter for all loaded sentences (original + extended)
 export const getAllSentences = async () => {
   const { TATOEBA_BEGINNER } = await import('./beginner');
   const { TATOEBA_INTERMEDIATE } = await import('./intermediate');
   const { TATOEBA_ADVANCED } = await import('./advanced');
-  return [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
+  const { TATOEBA_BEGINNER_EXTENDED } = await import('./beginner_extended');
+  const { TATOEBA_INTERMEDIATE_EXTENDED } = await import('./intermediate_extended');
+  const { TATOEBA_ADVANCED_EXTENDED } = await import('./advanced_extended');
+  return [
+    ...TATOEBA_BEGINNER,
+    ...TATOEBA_INTERMEDIATE,
+    ...TATOEBA_ADVANCED,
+    ...TATOEBA_BEGINNER_EXTENDED,
+    ...TATOEBA_INTERMEDIATE_EXTENDED,
+    ...TATOEBA_ADVANCED_EXTENDED,
+  ];
 };
 
 // Filter by difficulty
