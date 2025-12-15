@@ -37,8 +37,8 @@ export default function HomeView({ setCurrentView, stats }) {
         {/* Hero content */}
         <div className="relative px-6 py-16 md:py-24 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full border border-purple-500/30 mb-6">
-            <Sparkles size={14} className="text-purple-400" />
-            <span className="text-xs text-purple-300 font-medium">Learn Romanian Differently</span>
+            <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
+            <span className="text-xs text-purple-600 dark:text-purple-300 font-medium">Learn Romanian Differently</span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight">
@@ -139,14 +139,19 @@ export default function HomeView({ setCurrentView, stats }) {
 
 function StatCard({ value, label, color }) {
   const colorClasses = {
-    purple: 'from-purple-900/50 to-indigo-900/50 border-purple-800/50 text-purple-400',
-    rose: 'from-rose-900/50 to-orange-900/50 border-rose-800/50 text-rose-400',
-    teal: 'from-teal-900/50 to-cyan-900/50 border-teal-800/50 text-teal-400',
+    purple: 'from-purple-100 to-indigo-100 dark:from-purple-900/50 dark:to-indigo-900/50 border-purple-300 dark:border-purple-800/50',
+    rose: 'from-rose-100 to-orange-100 dark:from-rose-900/50 dark:to-orange-900/50 border-rose-300 dark:border-rose-800/50',
+    teal: 'from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 border-teal-300 dark:border-teal-800/50',
+  };
+  const textClasses = {
+    purple: 'text-purple-600 dark:text-purple-400',
+    rose: 'text-rose-600 dark:text-rose-400',
+    teal: 'text-teal-600 dark:text-teal-400',
   };
 
   return (
     <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 text-center border`}>
-      <div className={`text-2xl font-bold ${colorClasses[color].split(' ').pop()}`}>
+      <div className={`text-2xl font-bold ${textClasses[color]}`}>
         {value}
       </div>
       <div className="text-xs text-text-muted">{label}</div>
@@ -181,9 +186,9 @@ function SessionCard({ icon: Icon, title, description, gradient, onClick }) {
 
 function PhilosophyItem({ color, title, description }) {
   const colorClasses = {
-    purple: 'text-purple-400',
-    rose: 'text-rose-400',
-    teal: 'text-teal-400',
+    purple: 'text-purple-600 dark:text-purple-400',
+    rose: 'text-rose-600 dark:text-rose-400',
+    teal: 'text-teal-600 dark:text-teal-400',
   };
 
   return (

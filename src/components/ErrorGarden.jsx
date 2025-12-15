@@ -190,7 +190,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex p-4 bg-rose-500/20 rounded-2xl mb-4">
-              <Flower2 size={40} className="text-rose-400" />
+              <Flower2 size={40} className="text-rose-600 dark:text-rose-400" />
             </div>
             <h1 className="text-3xl font-bold text-text-primary mb-2">Error Garden</h1>
             <p className="text-text-muted">Your mistakes become your curriculum</p>
@@ -200,7 +200,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           <div className="bg-gradient-to-br from-rose-900/30 to-orange-900/30 rounded-2xl p-6 border border-rose-800/50 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-text-primary">Your Garden</h3>
-              <span className="text-3xl font-bold text-rose-400">{errors.length}</span>
+              <span className="text-3xl font-bold text-rose-600 dark:text-rose-400">{errors.length}</span>
             </div>
 
             {errors.length > 0 ? (
@@ -218,7 +218,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                         <span className="text-text-muted">-&gt;</span>
                         <span className="text-text-secondary">{error.en}</span>
                       </div>
-                      <span className="text-rose-400 text-sm font-medium">x{error.wrongCount}</span>
+                      <span className="text-rose-600 dark:text-rose-400 text-sm font-medium">x{error.wrongCount}</span>
                     </div>
                   ))}
                 {errors.length > 5 && (
@@ -247,8 +247,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                 onClick={() => setMode('words')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'words'
-                    ? 'bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
-                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                    ? 'bg-rose-600 bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <BookOpen size={18} />
@@ -258,8 +258,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                 onClick={() => setMode('sentences')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'sentences'
-                    ? 'bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
-                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                    ? 'bg-rose-600 bg-gradient-to-br from-rose-600 to-orange-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <MessageSquare size={18} />
@@ -278,7 +278,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
               </li>
               <li className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">2</span>
-                <span><strong className="text-rose-400">GUESS first</strong> - do not look it up!</span>
+                <span><strong className="text-rose-600 dark:text-rose-400">GUESS first</strong> - do not look it up!</span>
               </li>
               <li className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-rose-600 rounded-full flex items-center justify-center text-xs font-bold text-white">3</span>
@@ -335,8 +335,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             </div>
             {streak > 0 && (
               <div className="flex items-center gap-1 px-2 py-1 bg-green-900/50 rounded-full">
-                <Sparkles size={14} className="text-green-400" />
-                <span className="text-green-400 text-sm font-medium">{streak} streak</span>
+                <Sparkles size={14} className="text-green-600 dark:text-green-400" />
+                <span className="text-green-600 dark:text-green-400 text-sm font-medium">{streak} streak</span>
               </div>
             )}
           </div>
@@ -410,7 +410,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                       <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
                         <Check size={24} className="text-white" />
                       </div>
-                      <p className="text-green-400 text-xl font-bold">Correct!</p>
+                      <p className="text-green-600 dark:text-green-400 text-xl font-bold">Correct!</p>
                     </div>
                   ) : (
                     <div>
@@ -419,7 +419,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                           <X size={24} className="text-white" />
                         </div>
                       </div>
-                      <p className="text-rose-400 text-lg mb-2">
+                      <p className="text-rose-600 dark:text-rose-400 text-lg mb-2">
                         Your guess:{' '}
                         <span className="line-through opacity-70">{guess}</span>
                       </p>
@@ -427,7 +427,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                         {currentCard?.english || currentCard?.en}
                       </p>
                       {mode === 'words' && (
-                        <div className="flex items-center justify-center gap-2 mt-3 text-rose-300">
+                        <div className="flex items-center justify-center gap-2 mt-3 text-rose-600 dark:text-rose-300">
                           <Flower2 size={16} />
                           <span className="text-sm">Added to your garden</span>
                         </div>
@@ -456,7 +456,7 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
 
         {/* Tip */}
         <div className="mt-6 p-4 bg-rose-900/20 rounded-xl border border-rose-800/30">
-          <p className="text-rose-300 text-sm text-center italic">
+          <p className="text-rose-600 dark:text-rose-300 text-sm text-center italic">
             Wrong guesses stick better than passive reading. Embrace the mistakes!
           </p>
         </div>

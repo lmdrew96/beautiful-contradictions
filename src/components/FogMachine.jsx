@@ -111,7 +111,7 @@ export default function FogMachineView({ updateStats }) {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex p-4 bg-teal-500/20 rounded-2xl mb-4">
-              <CloudFog size={40} className="text-teal-400" />
+              <CloudFog size={40} className="text-teal-600 dark:text-teal-400" />
             </div>
             <h1 className="text-3xl font-bold text-text-primary mb-2">Fog Machine</h1>
             <p className="text-text-muted">Embrace productive confusion</p>
@@ -154,7 +154,7 @@ export default function FogMachineView({ updateStats }) {
             <div className="flex justify-between items-start mb-4">
               <span className="text-xs text-text-muted">Light</span>
               <div className="text-center">
-                <span className="text-2xl font-bold text-teal-400">{fogLevel}</span>
+                <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{fogLevel}</span>
                 <p className="text-sm text-text-primary font-medium">
                   {fogLevelDescriptions[fogLevel]?.label}
                 </p>
@@ -163,8 +163,8 @@ export default function FogMachineView({ updateStats }) {
             </div>
 
             {/* Description */}
-            <div className="bg-teal-900/20 rounded-lg p-3 border border-teal-800/30">
-              <p className="text-teal-300 text-sm text-center">
+            <div className="bg-teal-600 rounded-lg p-3">
+              <p className="text-white text-sm text-center font-medium">
                 {fogLevelDescriptions[fogLevel]?.desc}
               </p>
             </div>
@@ -178,8 +178,8 @@ export default function FogMachineView({ updateStats }) {
                 onClick={() => setMode('media')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'media'
-                    ? 'bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
-                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                    ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <Video size={18} />
@@ -189,8 +189,8 @@ export default function FogMachineView({ updateStats }) {
                 onClick={() => setMode('reading')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'reading'
-                    ? 'bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
-                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                    ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <BookOpen size={18} />
@@ -210,23 +210,23 @@ export default function FogMachineView({ updateStats }) {
             <h3 className="text-lg font-semibold text-text-primary mb-4">The Fog Method</h3>
             <ul className="text-text-secondary space-y-3 text-sm">
               <li className="flex gap-3">
-                <span className="text-teal-400">-&gt;</span>
-                <span>Content is <strong className="text-teal-400">above your level</strong> - that is the point</span>
+                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                <span>Content is <strong className="text-teal-600 dark:text-teal-400">above your level</strong> - that is the point</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-teal-400">-&gt;</span>
+                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
                 <span>Do not pause. Do not rewind. Do not look things up.</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-teal-400">-&gt;</span>
+                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
                 <span>Let words wash over you like music</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-teal-400">-&gt;</span>
-                <span>Notice what <strong className="text-teal-400">emerges</strong> from the fog</span>
+                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                <span>Notice what <strong className="text-teal-600 dark:text-teal-400">emerges</strong> from the fog</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-teal-400">-&gt;</span>
+                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
                 <span>Your pattern-recognition brain works better when you stop micromanaging it</span>
               </li>
             </ul>
@@ -263,7 +263,7 @@ export default function FogMachineView({ updateStats }) {
         <div className="flex justify-between items-center mb-6 bg-bg-secondary rounded-xl p-4 border border-border">
           <div className="flex items-center gap-4">
             <div className="p-2 bg-teal-500/20 rounded-lg">
-              <CloudFog size={24} className="text-teal-400" />
+              <CloudFog size={24} className="text-teal-600 dark:text-teal-400" />
             </div>
             <div>
               <p className="text-text-primary font-mono text-2xl font-bold">
@@ -275,7 +275,7 @@ export default function FogMachineView({ updateStats }) {
 
           <div className="flex items-center gap-2">
             <div className="text-right mr-4">
-              <p className="text-teal-400 font-medium">Level {fogLevel}</p>
+              <p className="text-teal-600 dark:text-teal-400 font-medium">Level {fogLevel}</p>
               <p className="text-xs text-text-muted">
                 {fogLevelDescriptions[fogLevel]?.label}
               </p>
@@ -317,7 +317,7 @@ export default function FogMachineView({ updateStats }) {
         {/* Fog Reminders */}
         <div className="mt-6 space-y-3">
           <div className="p-4 bg-teal-900/20 rounded-xl border border-teal-800/30">
-            <p className="text-teal-300 text-sm text-center italic">
+            <p className="text-teal-600 dark:text-teal-300 text-sm text-center italic">
               Do not pause. Do not translate. Just listen. Let it wash over you.
             </p>
           </div>
@@ -332,7 +332,7 @@ export default function FogMachineView({ updateStats }) {
         {/* Milestones */}
         {timeInFog > 0 && timeInFog % 300 === 0 && (
           <div className="mt-4 p-4 bg-gradient-to-r from-teal-900/30 to-cyan-900/30 rounded-xl border border-teal-700/50 animate-pulse">
-            <p className="text-teal-300 text-center font-medium">
+            <p className="text-teal-600 dark:text-teal-300 text-center font-medium">
               {Math.floor(timeInFog / 60)} minutes in the fog! Keep going.
             </p>
           </div>

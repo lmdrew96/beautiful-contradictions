@@ -49,17 +49,47 @@ export function ThemeProvider({ children }) {
 
     const root = document.documentElement;
 
+    // Determine effective mode for Tailwind dark: prefix
+    let effectiveMode = mode;
     if (mode === 'system') {
       root.setAttribute('data-theme', 'system');
       root.setAttribute('data-base-theme', theme);
+      effectiveMode = window.matchMedia?.('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
     } else {
       root.setAttribute('data-theme', `${theme}-${mode}`);
       root.removeAttribute('data-base-theme');
     }
 
+    // Toggle dark class for Tailwind dark: prefix support
+    if (effectiveMode === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+
     localStorage.setItem(STORAGE_KEYS.theme, theme);
     localStorage.setItem(STORAGE_KEYS.mode, mode);
   }, [theme, mode, isLoaded]);
+
+  // Listen for system preference changes when in system mode
+  useEffect(() => {
+    if (mode !== 'system') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => {
+      const root = document.documentElement;
+      if (e.matches) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [mode]);
 
   // Get current effective mode (resolves 'system' to actual value)
   const getEffectiveMode = () => {

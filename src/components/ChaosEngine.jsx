@@ -88,7 +88,7 @@ export default function ChaosEngineView({ updateStats }) {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex p-4 bg-purple-500/20 rounded-2xl mb-4">
-              <Shuffle size={40} className="text-purple-400" />
+              <Shuffle size={40} className="text-purple-600 dark:text-purple-400" />
             </div>
             <h1 className="text-3xl font-bold text-text-primary mb-2">Chaos Window</h1>
             <p className="text-text-muted">Random content, structured time</p>
@@ -107,12 +107,12 @@ export default function ChaosEngineView({ updateStats }) {
                   onClick={() => setSessionDuration(option.minutes * 60)}
                   className={`py-4 rounded-xl font-medium transition-all ${
                     sessionDuration === option.minutes * 60
-                      ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
-                      : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                      ? 'bg-purple-600 bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
+                      : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                   }`}
                 >
                   <div className="text-lg">{option.label}</div>
-                  <div className="text-xs opacity-70">{option.description}</div>
+                  <div className={`text-xs ${sessionDuration === option.minutes * 60 ? 'text-white/70' : 'text-text-muted'}`}>{option.description}</div>
                 </button>
               ))}
             </div>
@@ -126,8 +126,8 @@ export default function ChaosEngineView({ updateStats }) {
                 onClick={() => setMode('media')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'media'
-                    ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                    ? 'bg-purple-600 bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <Video size={18} />
@@ -137,8 +137,8 @@ export default function ChaosEngineView({ updateStats }) {
                 onClick={() => setMode('recipe')}
                 className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   mode === 'recipe'
-                    ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
-                    : 'bg-bg-tertiary text-text-secondary hover:bg-bg-tertiary/80'
+                    ? 'bg-purple-600 bg-gradient-to-br from-purple-600 to-pink-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
                 <ChefHat size={18} />
@@ -206,7 +206,7 @@ export default function ChaosEngineView({ updateStats }) {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl mb-4">
-              <Sparkles size={40} className="text-purple-400" />
+              <Sparkles size={40} className="text-purple-600 dark:text-purple-400" />
             </div>
             <h1 className="text-3xl font-bold text-text-primary mb-2">Session Complete!</h1>
             <p className="text-text-muted">Time for a micro-reflection</p>
@@ -312,7 +312,7 @@ export default function ChaosEngineView({ updateStats }) {
 
         {/* Tip */}
         <div className="mt-6 p-4 bg-purple-900/20 rounded-xl border border-purple-800/30">
-          <p className="text-purple-300 text-sm text-center italic">
+          <p className="text-purple-600 dark:text-purple-300 text-sm text-center italic">
             No need to understand everything. Just let the language wash over you.
           </p>
         </div>
