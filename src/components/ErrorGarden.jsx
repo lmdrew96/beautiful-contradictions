@@ -62,10 +62,6 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           { ...currentCard, wrongCount: 1, addedAt: Date.now() },
         ]);
       }
-      updateStats((prev) => ({
-        ...prev,
-        errorsHarvested: prev.errorsHarvested + 1,
-      }));
     }
   };
 

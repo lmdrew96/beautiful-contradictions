@@ -1,6 +1,6 @@
 {
   "name": "beautiful-contradictions",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A language learning app built on paradox: structured chaos, mastery through mistakes, and knowing through not-knowing.",
   "type": "module",
   "scripts": {
@@ -10,9 +10,10 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.87.1",
+    "lucide-react": "^0.263.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "lucide-react": "^0.263.1"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

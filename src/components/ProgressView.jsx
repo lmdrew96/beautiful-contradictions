@@ -42,8 +42,8 @@ export default function ProgressView({ stats, errors, setErrors }) {
           />
           <StatCard
             icon={Flower2}
-            value={stats.errorsHarvested}
-            label="Errors Harvested"
+            value={errors.length}
+            label="Words in Garden"
             gradient="from-rose-900/50 to-orange-900/50"
             borderColor="border-rose-800/50"
             textColor="text-rose-400"

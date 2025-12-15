@@ -1,5 +1,6 @@
 import React from 'react';
 import { ExternalLink, Music, Video, Radio } from 'lucide-react';
+import VideoEmbed from './VideoEmbed';
 
 const platformIcons = {
   youtube: Video,
@@ -71,41 +72,11 @@ export default function ContentEmbed({ content, compact = false }) {
 
       {/* Embed */}
       <div className="relative bg-black">
-        {content.platform === 'youtube' ? (
-          <div className="aspect-video">
-            <iframe
-              src={content.embedUrl}
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              title={content.title}
-              loading="lazy"
-            />
-          </div>
-        ) : content.platform === 'spotify' ? (
-          <div className="h-[352px]">
-            <iframe
-              src={content.embedUrl}
-              className="w-full h-full"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-              title={content.title}
-              loading="lazy"
-            />
-          </div>
-        ) : (
-          <div className="aspect-video flex items-center justify-center bg-slate-800">
-            <a
-              href={content.embedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-slate-700 rounded-lg text-white hover:bg-slate-600 transition-colors"
-            >
-              <ExternalLink size={18} />
-              Open in new tab
-            </a>
-          </div>
-        )}
+        <VideoEmbed
+          embedUrl={content.embedUrl}
+          title={content.title}
+          platform={content.platform}
+        />
       </div>
 
       {/* Source attribution */}
