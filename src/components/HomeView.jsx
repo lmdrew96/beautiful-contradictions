@@ -20,16 +20,16 @@ export default function HomeView({ setCurrentView, stats }) {
     <div className="min-h-screen pb-24 md:pt-20">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-bg-primary to-pink-900/20" />
+        {/* Background effects - lighter in light mode, darker in dark mode */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/40 via-bg-primary to-pink-200/30 dark:from-purple-900/40 dark:via-bg-primary dark:to-pink-900/20" />
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-purple-500/30 rounded-full filter blur-3xl animate-pulse" />
+          <div className="absolute top-10 left-10 w-64 h-64 bg-purple-300/20 dark:bg-purple-500/30 rounded-full filter blur-3xl animate-pulse" />
           <div
-            className="absolute bottom-10 right-10 w-80 h-80 bg-pink-500/20 rounded-full filter blur-3xl animate-pulse"
+            className="absolute bottom-10 right-10 w-80 h-80 bg-pink-300/20 dark:bg-pink-500/20 rounded-full filter blur-3xl animate-pulse"
             style={{ animationDelay: '1s' }}
           />
           <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl animate-pulse"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-300/10 dark:bg-indigo-500/10 rounded-full filter blur-3xl animate-pulse"
             style={{ animationDelay: '2s' }}
           />
         </div>
@@ -42,7 +42,7 @@ export default function HomeView({ setCurrentView, stats }) {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight">
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-400 dark:via-pink-400 dark:to-orange-400 bg-clip-text text-transparent">
               Chaos
             </span>
             <span className="text-text-primary">Lingua</span>
