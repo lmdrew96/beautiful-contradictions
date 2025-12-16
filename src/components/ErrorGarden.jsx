@@ -5,6 +5,7 @@ import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVA
 import { useDifficulty } from '../contexts/DifficultyContext';
 import { filterContentByLevel, normalizeDifficulty } from '../utils/difficulty';
 import DifficultyToggle from './DifficultyToggle';
+import WordDefinition from './WordDefinition';
 
 const ALL_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
 
@@ -95,6 +96,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [sessionStartTime, setSessionStartTime] = useState(null);
   const [showAllWords, setShowAllWords] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [selectedWord, setSelectedWord] = useState(null);
+  const [showDefinition, setShowDefinition] = useState(false);
   const inputRef = useRef(null);
 
   // Difficulty context
@@ -134,6 +137,42 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
 
     window.speechSynthesis.speak(utterance);
   }, [currentCard?.romanian, currentCard?.ro, isPlayingAudio]);
+
+  // Handle word click for dictionary lookup
+  const handleWordClick = useCallback((word) => {
+    // Clean the word - remove punctuation from start/end
+    const cleanWord = word.replace(/^[.,!?;:'"()-]+|[.,!?;:'"()-]+$/g, '');
+    if (cleanWord.length > 0) {
+      setSelectedWord(cleanWord);
+      setShowDefinition(true);
+    }
+  }, []);
+
+  // Render Romanian text with clickable words
+  const renderClickableText = useCallback((text, className = '') => {
+    if (!text) return null;
+    const words = text.split(/(\s+)/);
+    return (
+      <span className={className}>
+        {words.map((segment, i) => {
+          // Preserve whitespace
+          if (/^\s+$/.test(segment)) {
+            return <span key={i}>{segment}</span>;
+          }
+          // Make words clickable
+          return (
+            <span
+              key={i}
+              onClick={() => handleWordClick(segment)}
+              className="cursor-pointer hover:text-garden-accent hover:underline decoration-garden-accent/50 underline-offset-2 transition-colors"
+            >
+              {segment}
+            </span>
+          );
+        })}
+      </span>
+    );
+  }, [handleWordClick]);
 
   const removeError = (ro) => {
     setErrors((prev) => prev.filter((e) => e.ro !== ro));
@@ -302,7 +341,12 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
                         className="flex justify-between items-center bg-bg-secondary rounded-lg px-3 py-2 group"
                       >
                         <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <span className="text-text-primary font-medium">{error.ro}</span>
+                          <span
+                            className="text-text-primary font-medium cursor-pointer hover:text-garden-accent transition-colors"
+                            onClick={() => handleWordClick(error.ro)}
+                          >
+                            {error.ro}
+                          </span>
                           <span className="text-text-muted">-&gt;</span>
                           <span className="text-text-secondary truncate">{error.en}</span>
                         </div>
@@ -432,6 +476,16 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             }
           </p>
         </div>
+
+        {/* Dictionary Modal */}
+        <WordDefinition
+          word={selectedWord}
+          isOpen={showDefinition}
+          onClose={() => {
+            setShowDefinition(false);
+            setSelectedWord(null);
+          }}
+        />
       </div>
     );
   }
@@ -494,8 +548,9 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
             </p>
             <div className="mb-6">
               <p className={`font-bold text-text-primary ${mode === 'sentences' ? 'text-2xl leading-relaxed' : 'text-5xl font-display'}`}>
-                {currentCard?.romanian || currentCard?.ro}
+                {renderClickableText(currentCard?.romanian || currentCard?.ro)}
               </p>
+              <p className="text-xs text-text-muted mt-2">(click any word to look it up)</p>
               {currentCard && (
                 <button
                   onClick={playAudio}
@@ -609,6 +664,16 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           </p>
         </div>
       </div>
+
+      {/* Dictionary Modal */}
+      <WordDefinition
+        word={selectedWord}
+        isOpen={showDefinition}
+        onClose={() => {
+          setShowDefinition(false);
+          setSelectedWord(null);
+        }}
+      />
     </div>
   );
 }

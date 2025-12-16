@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen, Zap } from 'lucide-react';
+import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen, Zap, Search } from 'lucide-react';
 import ContentEmbed from './ContentEmbed';
 import StoryReader from './StoryReader';
+import VideoSearch from './VideoSearch';
 import { formatTime } from '../hooks/useStorage';
-import { getRandomContent, getContentByDifficulty } from '../data/content';
+import { getRandomContent, getContentByDifficulty, CONTENT_DATABASE } from '../data/content';
 import { getRandomStory, ROMANIAN_STORIES } from '../data/stories';
 import { useDifficulty } from '../contexts/DifficultyContext';
 import { getDifficultyLabel } from '../utils/difficulty';
+
+// Storage key for user-added videos
+const USER_VIDEOS_KEY = 'cl-user-videos';
 
 export default function FogMachineView({ updateStats }) {
   const [sessionActive, setSessionActive] = useState(false);
@@ -16,11 +20,28 @@ export default function FogMachineView({ updateStats }) {
   const [storyIndex, setStoryIndex] = useState(0);
   const [timeInFog, setTimeInFog] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [mode, setMode] = useState('media'); // 'media' | 'reading'
+  const [mode, setMode] = useState('media'); // 'media' | 'reading' | 'search'
+  const [userVideos, setUserVideos] = useState(() => {
+    try {
+      const saved = localStorage.getItem(USER_VIDEOS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   // Difficulty context - fog level is managed separately but we track sessions
   const { getLevel, recordSession } = useDifficulty();
   const recommendedLevel = Math.min(10, getLevel('fog') + 1); // Fog should be slightly above comfort
+
+  // Combined content pool (built-in + user-added)
+  const allContent = [...CONTENT_DATABASE, ...userVideos];
+
+  // Get set of added video IDs for VideoSearch
+  const addedVideoIds = new Set([
+    ...CONTENT_DATABASE.map(c => c.id),
+    ...userVideos.map(c => c.id),
+  ]);
 
   // Timer effect
   useEffect(() => {
@@ -31,13 +52,31 @@ export default function FogMachineView({ updateStats }) {
     return () => clearInterval(interval);
   }, [isRunning]);
 
+  // Save user videos when they change
+  const handleAddVideo = useCallback((video) => {
+    setUserVideos(prev => {
+      const updated = [...prev, video];
+      localStorage.setItem(USER_VIDEOS_KEY, JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   const getFogContent = useCallback(() => {
-    return getRandomContent((c) =>
-      c.sessionTypes.includes('fog_session') &&
+    // Include user-added videos in the pool
+    const fogContent = allContent.filter(c =>
+      c.sessionTypes?.includes('fog_session') &&
       c.difficulty >= fogLevel - 1 &&
-      c.instructionLang === 'ro' // Prefer Romanian-only content for fog
-    ) || getRandomContent((c) => c.sessionTypes.includes('fog_session'));
-  }, [fogLevel]);
+      c.instructionLang === 'ro'
+    );
+    if (fogContent.length > 0) {
+      return fogContent[Math.floor(Math.random() * fogContent.length)];
+    }
+    // Fallback to any fog content
+    const fallback = allContent.filter(c => c.sessionTypes?.includes('fog_session'));
+    return fallback.length > 0
+      ? fallback[Math.floor(Math.random() * fallback.length)]
+      : getRandomContent((c) => c.sessionTypes.includes('fog_session'));
+  }, [fogLevel, allContent]);
 
   const getFogStory = useCallback(() => {
     // Get stories matching fog level (within 2 levels)
@@ -198,81 +237,110 @@ export default function FogMachineView({ updateStats }) {
           {/* Mode Toggle */}
           <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
             <p className="text-sm text-text-muted mb-3 text-center">Content Type</p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => setMode('media')}
-                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                className={`py-3 px-3 rounded-xl font-medium transition-all flex items-center justify-center gap-1.5 text-sm ${
                   mode === 'media'
                     ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
                     : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
-                <Video size={18} />
-                Video/Audio
+                <Video size={16} />
+                Media
               </button>
               <button
                 onClick={() => setMode('reading')}
-                className={`py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                className={`py-3 px-3 rounded-xl font-medium transition-all flex items-center justify-center gap-1.5 text-sm ${
                   mode === 'reading'
                     ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
                     : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
-                <BookOpen size={18} />
+                <BookOpen size={16} />
                 Reading
+              </button>
+              <button
+                onClick={() => setMode('search')}
+                className={`py-3 px-3 rounded-xl font-medium transition-all flex items-center justify-center gap-1.5 text-sm ${
+                  mode === 'search'
+                    ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
+                }`}
+              >
+                <Search size={16} />
+                Find
               </button>
             </div>
             <p className="text-center text-text-muted text-xs mt-3">
               {mode === 'media'
-                ? 'Listen and watch Romanian content'
-                : `${filteredStories.length} stories at this fog level`
+                ? `${allContent.filter(c => c.sessionTypes?.includes('fog_session')).length} videos in your library`
+                : mode === 'reading'
+                ? `${filteredStories.length} stories at this fog level`
+                : 'Search YouTube for Romanian content'
               }
             </p>
           </div>
 
-          {/* The Fog Method */}
-          <div className="bg-gradient-to-br from-teal-900/30 to-cyan-900/30 rounded-2xl p-6 border border-teal-800/50 mb-6">
-            <h3 className="text-lg font-semibold text-text-primary mb-4">The Fog Method</h3>
-            <ul className="text-text-secondary space-y-3 text-sm">
-              <li className="flex gap-3">
-                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
-                <span>Content is <strong className="text-teal-600 dark:text-teal-400">above your level</strong> - that is the point</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
-                <span>Do not pause. Do not rewind. Do not look things up.</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
-                <span>Let words wash over you like music</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
-                <span>Notice what <strong className="text-teal-600 dark:text-teal-400">emerges</strong> from the fog</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
-                <span>Your pattern-recognition brain works better when you stop micromanaging it</span>
-              </li>
-            </ul>
-          </div>
+          {/* Search Mode - YouTube Video Search */}
+          {mode === 'search' && (
+            <div className="mb-6">
+              <VideoSearch
+                onAddVideo={handleAddVideo}
+                addedVideoIds={addedVideoIds}
+              />
+            </div>
+          )}
 
-          {/* Science note */}
-          <div className="bg-bg-tertiary rounded-xl p-4 border border-border mb-6">
-            <p className="text-text-muted text-xs text-center">
-              Research shows that comprehensible input at i+1 (slightly above your level)
-              drives acquisition better than studying at your exact level.
-            </p>
-          </div>
+          {/* The Fog Method - only show when not in search mode */}
+          {mode !== 'search' && (
+            <div className="bg-gradient-to-br from-teal-900/30 to-cyan-900/30 rounded-2xl p-6 border border-teal-800/50 mb-6">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">The Fog Method</h3>
+              <ul className="text-text-secondary space-y-3 text-sm">
+                <li className="flex gap-3">
+                  <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                  <span>Content is <strong className="text-teal-600 dark:text-teal-400">above your level</strong> - that is the point</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                  <span>Do not pause. Do not rewind. Do not look things up.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                  <span>Let words wash over you like music</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                  <span>Notice what <strong className="text-teal-600 dark:text-teal-400">emerges</strong> from the fog</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-teal-600 dark:text-teal-400">-&gt;</span>
+                  <span>Your pattern-recognition brain works better when you stop micromanaging it</span>
+                </li>
+              </ul>
+            </div>
+          )}
 
-          {/* Start Button */}
-          <button
-            onClick={startSession}
-            className="w-full py-4 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"
-          >
-            Enter the Fog
-            <ArrowRight size={20} />
-          </button>
+          {/* Science note - only show when not in search mode */}
+          {mode !== 'search' && (
+            <div className="bg-bg-tertiary rounded-xl p-4 border border-border mb-6">
+              <p className="text-text-muted text-xs text-center">
+                Research shows that comprehensible input at i+1 (slightly above your level)
+                drives acquisition better than studying at your exact level.
+              </p>
+            </div>
+          )}
+
+          {/* Start Button - only show when not in search mode */}
+          {mode !== 'search' && (
+            <button
+              onClick={startSession}
+              className="w-full py-4 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl text-white font-bold text-lg hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"
+            >
+              Enter the Fog
+              <ArrowRight size={20} />
+            </button>
+          )}
         </div>
       </div>
     );
