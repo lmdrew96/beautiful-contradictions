@@ -33,16 +33,29 @@ export async function searchRomanianVideos(query, options = {}) {
     maxResults = 10,
     pageToken = null,
     videoDuration = null,
+    appendRomanian = true, // Add Romanian keywords to query for better results
   } = options;
+
+  // Enhance query with Romanian language markers for better results
+  // Only append if query doesn't already contain Romanian indicators
+  const romanianIndicators = ['română', 'romanian', 'ro', 'limba', 'în română', 'romaneste'];
+  const hasRomanianIndicator = romanianIndicators.some(ind =>
+    query.toLowerCase().includes(ind)
+  );
+
+  const enhancedQuery = (appendRomanian && !hasRomanianIndicator)
+    ? `${query} în limba română`
+    : query;
 
   // Build search URL
   const searchParams = new URLSearchParams({
     key: API_KEY,
     part: 'snippet',
     type: 'video',
-    q: query,
+    q: enhancedQuery,
     maxResults: Math.min(maxResults, 50),
     relevanceLanguage: 'ro',
+    regionCode: 'RO', // Prioritize videos popular in Romania
     videoCaption: 'closedCaption', // Only videos with captions
     safeSearch: 'moderate',
   });
@@ -221,16 +234,16 @@ export function estimateDifficulty(video) {
  */
 export function getSuggestedQueries() {
   return [
-    { query: 'learn romanian beginner', label: 'Beginner Lessons' },
-    { query: 'romanian conversation practice', label: 'Conversation' },
-    { query: 'romanian grammar explained', label: 'Grammar' },
-    { query: 'romanian pronunciation', label: 'Pronunciation' },
-    { query: 'romanian stories for learners', label: 'Stories' },
-    { query: 'romanian music lyrics', label: 'Music' },
-    { query: 'romanian news slow', label: 'News (Slow)' },
-    { query: 'romanian cooking recipe', label: 'Cooking' },
-    { query: 'romanian children cartoons', label: 'Kids Content' },
-    { query: 'romanian podcast', label: 'Podcasts' },
+    { query: 'învață română pentru începători', label: 'Beginner Lessons' },
+    { query: 'conversație în română', label: 'Conversation' },
+    { query: 'gramatică română explicată', label: 'Grammar' },
+    { query: 'pronunție română', label: 'Pronunciation' },
+    { query: 'povești în limba română', label: 'Stories' },
+    { query: 'muzică românească versuri', label: 'Music' },
+    { query: 'știri românia azi', label: 'News' },
+    { query: 'rețete românești tradiționale', label: 'Cooking' },
+    { query: 'desene animate în română', label: 'Kids Content' },
+    { query: 'podcast românesc', label: 'Podcasts' },
   ];
 }
 
