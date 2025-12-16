@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen, Zap, Search } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { CloudFog, ArrowRight, LogOut, Shuffle, Video, BookOpen, Zap, Search, FileText } from 'lucide-react';
 import ContentEmbed from './ContentEmbed';
 import StoryReader from './StoryReader';
 import VideoSearch from './VideoSearch';
+import TranscriptPlayer from './TranscriptPlayer';
 import { formatTime } from '../hooks/useStorage';
 import { getRandomContent, getContentByDifficulty, CONTENT_DATABASE } from '../data/content';
 import { getRandomStory, ROMANIAN_STORIES } from '../data/stories';
+import { TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED } from '../data/tatoeba';
 import { useDifficulty } from '../contexts/DifficultyContext';
-import { getDifficultyLabel } from '../utils/difficulty';
+import { getDifficultyLabel, filterContentByLevel } from '../utils/difficulty';
+import { createCaptionsFromSentences } from '../utils/captions';
 
 // Storage key for user-added videos
 const USER_VIDEOS_KEY = 'cl-user-videos';
@@ -36,6 +39,26 @@ export default function FogMachineView({ updateStats }) {
 
   // Combined content pool (built-in + user-added)
   const allContent = [...CONTENT_DATABASE, ...userVideos];
+
+  // All sentences for transcript mode
+  const allSentences = useMemo(() => [
+    ...TATOEBA_BEGINNER,
+    ...TATOEBA_INTERMEDIATE,
+    ...TATOEBA_ADVANCED,
+  ], []);
+
+  // Filter sentences by fog level for transcript mode
+  const filteredSentences = useMemo(() => {
+    return filterContentByLevel(allSentences, fogLevel);
+  }, [allSentences, fogLevel]);
+
+  // Create captions from sentences for TranscriptPlayer
+  const transcriptCaptions = useMemo(() => {
+    // Get a random subset of sentences (20 for a session)
+    const shuffled = [...filteredSentences].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 20);
+    return createCaptionsFromSentences(selected, 6); // 6 seconds per sentence
+  }, [filteredSentences]);
 
   // Get set of added video IDs for VideoSearch
   const addedVideoIds = new Set([
@@ -237,38 +260,49 @@ export default function FogMachineView({ updateStats }) {
           {/* Mode Toggle */}
           <div className="bg-bg-secondary rounded-2xl p-4 border border-border mb-6">
             <p className="text-sm text-text-muted mb-3 text-center">Content Type</p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => setMode('media')}
-                className={`py-3 px-3 rounded-xl font-medium transition-all flex items-center justify-center gap-1.5 text-sm ${
+                className={`py-3 px-2 rounded-xl font-medium transition-all flex items-center justify-center gap-1 text-xs ${
                   mode === 'media'
                     ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
                     : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
-                <Video size={16} />
+                <Video size={14} />
                 Media
               </button>
               <button
                 onClick={() => setMode('reading')}
-                className={`py-3 px-3 rounded-xl font-medium transition-all flex items-center justify-center gap-1.5 text-sm ${
+                className={`py-3 px-2 rounded-xl font-medium transition-all flex items-center justify-center gap-1 text-xs ${
                   mode === 'reading'
                     ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
                     : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
-                <BookOpen size={16} />
-                Reading
+                <BookOpen size={14} />
+                Read
+              </button>
+              <button
+                onClick={() => setMode('transcript')}
+                className={`py-3 px-2 rounded-xl font-medium transition-all flex items-center justify-center gap-1 text-xs ${
+                  mode === 'transcript'
+                    ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
+                    : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
+                }`}
+              >
+                <FileText size={14} />
+                Script
               </button>
               <button
                 onClick={() => setMode('search')}
-                className={`py-3 px-3 rounded-xl font-medium transition-all flex items-center justify-center gap-1.5 text-sm ${
+                className={`py-3 px-2 rounded-xl font-medium transition-all flex items-center justify-center gap-1 text-xs ${
                   mode === 'search'
                     ? 'bg-teal-600 bg-gradient-to-br from-teal-600 to-cyan-600 text-white shadow-lg'
                     : 'bg-bg-tertiary text-text-primary hover:bg-bg-tertiary/80'
                 }`}
               >
-                <Search size={16} />
+                <Search size={14} />
                 Find
               </button>
             </div>
@@ -277,6 +311,8 @@ export default function FogMachineView({ updateStats }) {
                 ? `${allContent.filter(c => c.sessionTypes?.includes('fog_session')).length} videos in your library`
                 : mode === 'reading'
                 ? `${filteredStories.length} stories at this fog level`
+                : mode === 'transcript'
+                ? `${filteredSentences.length} sentences - click words to look up`
                 : 'Search YouTube for Romanian content'
               }
             </p>
@@ -384,7 +420,14 @@ export default function FogMachineView({ updateStats }) {
         </div>
 
         {/* Content */}
-        {mode === 'reading' && currentStory ? (
+        {mode === 'transcript' ? (
+          <div className="bg-bg-secondary rounded-2xl border border-border overflow-hidden" style={{ height: '70vh' }}>
+            <TranscriptPlayer
+              captions={transcriptCaptions}
+              title="Sentence Practice"
+            />
+          </div>
+        ) : mode === 'reading' && currentStory ? (
           <StoryReader
             story={currentStory}
             onNext={() => navigateStory(1)}
@@ -397,29 +440,47 @@ export default function FogMachineView({ updateStats }) {
         )}
 
         {/* Controls */}
-        <div className="mt-6">
-          <button
-            onClick={shuffleContent}
-            className="w-full py-3 bg-bg-tertiary rounded-xl text-text-primary font-medium hover:bg-bg-secondary transition-colors flex items-center justify-center gap-2"
-          >
-            <Shuffle size={18} />
-            {mode === 'reading' ? 'Random Story' : 'Different Content'}
-          </button>
-        </div>
+        {mode !== 'transcript' && (
+          <div className="mt-6">
+            <button
+              onClick={shuffleContent}
+              className="w-full py-3 bg-bg-tertiary rounded-xl text-text-primary font-medium hover:bg-bg-secondary transition-colors flex items-center justify-center gap-2"
+            >
+              <Shuffle size={18} />
+              {mode === 'reading' ? 'Random Story' : 'Different Content'}
+            </button>
+          </div>
+        )}
 
         {/* Fog Reminders */}
         <div className="mt-6 space-y-3">
-          <div className="p-4 bg-teal-900/20 rounded-xl border border-teal-800/30">
-            <p className="text-teal-600 dark:text-teal-300 text-sm text-center italic">
-              Do not pause. Do not translate. Just listen. Let it wash over you.
-            </p>
-          </div>
-
-          <div className="p-3 bg-bg-tertiary rounded-lg">
-            <p className="text-text-muted text-xs text-center">
-              Confusion is understanding in progress. Stay in the fog.
-            </p>
-          </div>
+          {mode === 'transcript' ? (
+            <>
+              <div className="p-4 bg-teal-900/20 rounded-xl border border-teal-800/30">
+                <p className="text-teal-600 dark:text-teal-300 text-sm text-center italic">
+                  Click any word to look it up. Click sentences to jump to them.
+                </p>
+              </div>
+              <div className="p-3 bg-bg-tertiary rounded-lg">
+                <p className="text-text-muted text-xs text-center">
+                  Practice reading and listening with interactive sentences.
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="p-4 bg-teal-900/20 rounded-xl border border-teal-800/30">
+                <p className="text-teal-600 dark:text-teal-300 text-sm text-center italic">
+                  Do not pause. Do not translate. Just listen. Let it wash over you.
+                </p>
+              </div>
+              <div className="p-3 bg-bg-tertiary rounded-lg">
+                <p className="text-text-muted text-xs text-center">
+                  Confusion is understanding in progress. Stay in the fog.
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Milestones */}
