@@ -212,16 +212,24 @@ export default function FogMachineView({ updateStats }) {
             </p>
 
             {/* Slider */}
-            <div className="relative mb-4">
+            <div className="relative mb-4 h-6 flex items-center">
+              {/* Background track */}
+              <div className="absolute inset-x-0 h-2 rounded-full bg-bg-tertiary" />
+              {/* Filled portion */}
+              <div
+                className="absolute left-0 h-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 pointer-events-none"
+                style={{ width: `${((fogLevel - 4) / 6) * 100}%` }}
+              />
+              {/* Actual input - fully transparent, just for interaction */}
               <input
                 type="range"
                 min="4"
                 max="10"
                 value={fogLevel}
                 onChange={(e) => setFogLevel(parseInt(e.target.value))}
-                className="w-full h-2 bg-bg-tertiary rounded-full appearance-none cursor-pointer
+                className="relative w-full h-6 bg-transparent appearance-none cursor-pointer z-10
                   [&::-webkit-slider-runnable-track]:bg-transparent
-                  [&::-webkit-slider-runnable-track]:rounded-full
+                  [&::-webkit-slider-runnable-track]:h-2
                   [&::-webkit-slider-thumb]:appearance-none
                   [&::-webkit-slider-thumb]:w-6
                   [&::-webkit-slider-thumb]:h-6
@@ -231,7 +239,9 @@ export default function FogMachineView({ updateStats }) {
                   [&::-webkit-slider-thumb]:to-cyan-500
                   [&::-webkit-slider-thumb]:shadow-lg
                   [&::-webkit-slider-thumb]:cursor-pointer
+                  [&::-webkit-slider-thumb]:-mt-2
                   [&::-moz-range-track]:bg-transparent
+                  [&::-moz-range-track]:h-2
                   [&::-moz-range-thumb]:border-0
                   [&::-moz-range-thumb]:w-6
                   [&::-moz-range-thumb]:h-6
@@ -239,11 +249,6 @@ export default function FogMachineView({ updateStats }) {
                   [&::-moz-range-thumb]:bg-gradient-to-br
                   [&::-moz-range-thumb]:from-teal-400
                   [&::-moz-range-thumb]:to-cyan-500"
-              />
-              {/* Gradient overlay */}
-              <div
-                className="absolute top-0 left-0 h-2 rounded-full bg-gradient-to-r from-teal-500 to-cyan-500 pointer-events-none"
-                style={{ width: `${((fogLevel - 4) / 6) * 100}%` }}
               />
             </div>
 
