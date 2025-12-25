@@ -1,11 +1,12 @@
 import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare, Trash2, ChevronDown, ChevronUp, Volume2, Loader2 } from 'lucide-react';
+import { Flower2, Check, X, ArrowRight, RotateCcw, Sparkles, BookOpen, MessageSquare, Trash2, ChevronDown, ChevronUp, Volume2, Loader2, Flame, Zap } from 'lucide-react';
 import { getWeightedRandomVocab, VOCABULARY_DATABASE } from '../data/vocabulary';
 import { getRandomSentence, TATOEBA_BEGINNER, TATOEBA_INTERMEDIATE, TATOEBA_ADVANCED } from '../data/tatoeba';
 import { useDifficulty } from '../contexts/DifficultyContext';
 import { filterContentByLevel, normalizeDifficulty } from '../utils/difficulty';
 import DifficultyToggle from './DifficultyToggle';
 import WordDefinition from './WordDefinition';
+import { StreakCelebration, EncouragementToast, ProgressPulse } from './Celebration';
 
 const ALL_SENTENCES = [...TATOEBA_BEGINNER, ...TATOEBA_INTERMEDIATE, ...TATOEBA_ADVANCED];
 
@@ -97,6 +98,8 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   const [showAllWords, setShowAllWords] = useState(false);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [selectedWord, setSelectedWord] = useState(null);
+  const [showStreak, setShowStreak] = useState(false);
+  const [showEncouragement, setShowEncouragement] = useState(false);
   const [showDefinition, setShowDefinition] = useState(false);
   const inputRef = useRef(null);
 
@@ -246,7 +249,19 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
     recordAttempt('garden', cardDifficulty, correct);
 
     if (correct) {
-      setStreak((s) => s + 1);
+      const newStreak = streak + 1;
+      setStreak(newStreak);
+      
+      // Show streak celebration for milestones
+      if (newStreak >= 3 && newStreak % 3 === 0) {
+        setShowStreak(true);
+        setTimeout(() => setShowStreak(false), 2000);
+      }
+      
+      // Show encouragement toast
+      setShowEncouragement(true);
+      setTimeout(() => setShowEncouragement(false), 1500);
+      
       // Track correct guesses for accuracy stats
       updateStats((prev) => ({
         ...prev,
@@ -495,24 +510,40 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
   // ============================================
   return (
     <div className="min-h-screen pb-24 md:pt-20 px-6">
+      {/* Celebration Components */}
+      <StreakCelebration streak={streak} show={showStreak} />
+      <EncouragementToast show={showEncouragement} />
+      
       <div className="max-w-lg mx-auto py-8">
         {/* Header Stats */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
-            <div className="text-sm">
-              <span className="text-text-muted">Reviewed: </span>
-              <span className="text-text-primary font-medium">{cardsReviewed}</span>
-            </div>
+            <ProgressPulse pulse={isCorrect && showResult}>
+              <div className="text-sm bg-bg-secondary/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border">
+                <span className="text-text-muted">Reviewed: </span>
+                <span className="text-text-primary font-bold">{cardsReviewed}</span>
+              </div>
+            </ProgressPulse>
             {streak > 0 && (
-              <div className="flex items-center gap-1 px-2 py-1 bg-green-900/50 rounded-full">
-                <Sparkles size={14} className="text-green-600 dark:text-green-400" />
-                <span className="text-green-600 dark:text-green-400 text-sm font-medium">{streak} streak</span>
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-300
+                ${streak >= 5 
+                  ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/30' 
+                  : 'bg-green-500/20 border border-green-500/30'}`}
+              >
+                {streak >= 5 ? (
+                  <Flame size={16} className="text-yellow-300 animate-pulse" />
+                ) : (
+                  <Zap size={14} className="text-green-400" />
+                )}
+                <span className={`text-sm font-bold ${streak >= 5 ? 'text-white' : 'text-green-400'}`}>
+                  {streak} {streak >= 5 ? '🔥' : 'streak'}
+                </span>
               </div>
             )}
           </div>
           <button
             onClick={endSession}
-            className="text-text-muted hover:text-text-primary transition-colors text-sm"
+            className="text-text-muted hover:text-text-primary transition-all text-sm hover:scale-105 active:scale-95 px-3 py-1.5 rounded-lg hover:bg-bg-tertiary"
           >
             End Session
           </button>
@@ -523,9 +554,9 @@ export default function ErrorGardenView({ updateStats, errors, setErrors }) {
           className={`rounded-2xl p-8 mb-6 transition-all duration-300 ${
             showResult
               ? isCorrect
-                ? 'bg-gradient-to-br from-green-900/50 to-emerald-900/50 border-2 border-green-600'
-                : 'bg-gradient-to-br from-rose-900/50 to-orange-900/50 border-2 border-rose-600'
-              : 'bg-bg-secondary border border-border'
+                ? 'bg-gradient-to-br from-green-900/50 to-emerald-900/50 border-2 border-green-500 shadow-lg shadow-green-500/20 animate-bounce-in'
+                : 'bg-gradient-to-br from-rose-900/50 to-orange-900/50 border-2 border-rose-500 animate-shake'
+              : 'bg-bg-secondary border border-border hover:border-accent/30'
           }`}
         >
           <div className="text-center">

@@ -1,5 +1,5 @@
-import React from 'react';
-import { BarChart3, Flower2, Shuffle, CloudFog, Hammer, Trash2, Award, BookOpen, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { BarChart3, Flower2, Shuffle, CloudFog, Hammer, Trash2, Award, BookOpen, RotateCcw, Trophy, Flame, Star, Sparkles, TrendingUp } from 'lucide-react';
 import { useDifficulty } from '../contexts/DifficultyContext';
 import { getDifficultyLabel, getDifficultyColor, getDifficultyBgColor } from '../utils/difficulty';
 
@@ -26,11 +26,22 @@ export default function ProgressView({ stats, errors, setErrors }) {
       <div className="max-w-lg mx-auto py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex p-4 bg-bg-tertiary rounded-2xl mb-4">
-            <BarChart3 size={40} className="text-text-primary" />
+          <div className="inline-flex p-4 bg-gradient-to-br from-accent/20 to-purple-500/20 rounded-2xl mb-4 hover:scale-105 transition-transform">
+            <Trophy size={40} className="text-accent" />
           </div>
-          <h1 className="text-3xl font-bold text-text-primary mb-2">Your Journey</h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-2 flex items-center justify-center gap-2">
+            Your Journey
+            <Sparkles size={24} className="text-warning animate-pulse" />
+          </h1>
           <p className="text-text-muted">Progress through beautiful chaos</p>
+          
+          {/* Achievement badge if they have stats */}
+          {totalMinutes > 0 && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-warning/20 to-orange-500/20 rounded-full border border-warning/30">
+              <Flame size={16} className="text-warning" />
+              <span className="text-sm font-medium text-warning">{totalMinutes} minutes of learning!</span>
+            </div>
+          )}
         </div>
 
         {/* Main Stats Grid */}
@@ -236,12 +247,17 @@ export default function ProgressView({ stats, errors, setErrors }) {
         </div>
 
         {/* Motivational Quote */}
-        <div className="bg-bg-secondary rounded-2xl p-6 border border-border">
-          <p className="text-center text-text-secondary italic">
+        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-colors relative overflow-hidden group">
+          {/* Background decoration */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+          
+          <p className="text-center text-text-secondary italic text-lg relative">
             "The mess is the method. Your mistakes are your map."
           </p>
-          <p className="text-center text-text-muted text-sm mt-2">
-            Keep embracing the chaos.
+          <p className="text-center text-text-muted text-sm mt-3 relative flex items-center justify-center gap-2">
+            <Star size={14} className="text-warning" />
+            Keep embracing the chaos
+            <Star size={14} className="text-warning" />
           </p>
         </div>
 
@@ -269,12 +285,19 @@ export default function ProgressView({ stats, errors, setErrors }) {
 }
 
 function StatCard({ icon: Icon, value, label, gradient, borderColor, textColor }) {
+  const [isHovered, setIsHovered] = useState(false);
+  
   return (
-    <div className={`bg-gradient-to-br ${gradient} rounded-2xl p-5 border ${borderColor}`}>
+    <div 
+      className={`bg-gradient-to-br ${gradient} rounded-2xl p-5 border ${borderColor} transition-all duration-300 cursor-default
+        ${isHovered ? 'scale-105 shadow-lg' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="flex items-start justify-between mb-2">
-        <Icon size={20} className={textColor} />
+        <Icon size={20} className={`${textColor} transition-transform duration-300 ${isHovered ? 'scale-110 rotate-12' : ''}`} />
       </div>
-      <div className={`text-3xl font-bold ${textColor}`}>{value}</div>
+      <div className={`text-3xl font-bold ${textColor} transition-all duration-300 ${isHovered ? 'scale-110' : ''}`}>{value}</div>
       <div className="text-text-muted text-sm">{label}</div>
     </div>
   );
@@ -282,28 +305,49 @@ function StatCard({ icon: Icon, value, label, gradient, borderColor, textColor }
 
 function LevelRow({ icon: Icon, label, level, progress, color }) {
   const levelLabel = getDifficultyLabel(level);
+  const isMaxProgress = progress >= 100;
 
   return (
-    <div className="flex items-center gap-4">
-      <div className={`p-2 rounded-lg bg-bg-tertiary ${color}`}>
+    <div className="flex items-center gap-4 p-3 rounded-xl bg-bg-tertiary/30 hover:bg-bg-tertiary/50 transition-colors group">
+      <div className={`p-2.5 rounded-xl bg-bg-tertiary ${color} transition-all duration-300 group-hover:scale-110`}>
         <Icon size={18} />
       </div>
       <div className="flex-1">
-        <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center justify-between mb-2">
           <span className="text-text-primary font-medium">{label}</span>
           <div className="flex items-center gap-2">
-            <span className={`text-sm font-bold ${color}`}>Lv {level}</span>
-            <span className="text-xs text-text-muted">{levelLabel}</span>
+            <span className={`text-sm font-bold ${color} ${level >= 7 ? 'animate-pulse' : ''}`}>
+              {level >= 7 && <Flame size={14} className="inline mr-1 text-warning" />}
+              Lv {level}
+            </span>
+            <span className="text-xs text-text-muted px-2 py-0.5 bg-bg-tertiary rounded-full">{levelLabel}</span>
           </div>
         </div>
-        <div className="h-2 bg-bg-tertiary rounded-full overflow-hidden">
+        <div className="h-2.5 bg-bg-tertiary rounded-full overflow-hidden shadow-inner">
           <div
-            className={`h-full bg-gradient-to-r from-accent to-accent/70 transition-all duration-300`}
-            style={{ width: `${progress}%` }}
-          />
+            className={`h-full rounded-full transition-all duration-500 relative ${
+              isMaxProgress ? 'bg-gradient-to-r from-warning to-success animate-pulse' : 'bg-gradient-to-r from-accent to-accent/70'
+            }`}
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          >
+            {progress > 20 && (
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
+            )}
+          </div>
         </div>
-        <p className="text-xs text-text-muted mt-1">
-          {progress === 100 ? 'Ready to level up!' : progress > 0 ? `${progress}% to next level` : 'Keep practicing'}
+        <p className={`text-xs mt-1.5 transition-all ${
+          isMaxProgress ? 'text-success font-medium flex items-center gap-1' : 'text-text-muted'
+        }`}>
+          {isMaxProgress ? (
+            <>
+              <Sparkles size={12} />
+              Ready to level up!
+            </>
+          ) : progress > 0 ? (
+            `${Math.round(progress)}% to next level`
+          ) : (
+            'Keep practicing'
+          )}
         </p>
       </div>
     </div>

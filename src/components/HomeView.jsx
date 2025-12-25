@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Shuffle, Flower2, CloudFog, Hammer, Sparkles, ChevronRight } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Shuffle, Flower2, CloudFog, Hammer, Sparkles, ChevronRight, Zap, Star, Flame } from 'lucide-react';
 
 const mantras = [
   "The mess is the method.",
@@ -10,44 +10,85 @@ const mantras = [
   "My mistakes are my map.",
 ];
 
-export default function HomeView({ setCurrentView, stats }) {
-  const currentMantra = useMemo(() =>
-    mantras[Math.floor(Math.random() * mantras.length)],
-    []
+// Floating particle component for visual interest
+function FloatingParticles() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(6)].map((_, i) => (
+        <div
+          key={i}
+          className="absolute rounded-full blur-xl animate-float-slow opacity-30"
+          style={{
+            width: `${60 + Math.random() * 80}px`,
+            height: `${60 + Math.random() * 80}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            background: `linear-gradient(135deg, 
+              ${['#7c3aed', '#ec4899', '#06b6d4', '#f59e0b'][i % 4]}, 
+              ${['#8b5cf6', '#f472b6', '#22d3ee', '#fbbf24'][i % 4]})`,
+            animationDelay: `${i * 1.5}s`,
+            animationDuration: `${8 + i * 2}s`,
+          }}
+        />
+      ))}
+    </div>
   );
+}
+
+export default function HomeView({ setCurrentView, stats }) {
+  const [mantraIndex, setMantraIndex] = useState(0);
+  const [isMantraVisible, setIsMantraVisible] = useState(true);
+  
+  // Rotate mantras for engagement
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsMantraVisible(false);
+      setTimeout(() => {
+        setMantraIndex((prev) => (prev + 1) % mantras.length);
+        setIsMantraVisible(true);
+      }, 300);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentMantra = mantras[mantraIndex];
 
   return (
     <div className="min-h-screen pb-24 md:pt-20">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/40 via-transparent to-pink-200/30 dark:from-purple-900/40 dark:via-transparent dark:to-pink-900/20" />
+        {/* Animated background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/40 via-transparent to-pink-200/30 dark:from-purple-900/40 dark:via-transparent dark:to-pink-900/20 animate-gradient" />
 
-        {/* Floating orbs - decorative */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-purple-300/20 dark:bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-10 right-10 w-48 h-48 bg-pink-300/20 dark:bg-pink-500/30 rounded-full blur-3xl animate-pulse" />
-        </div>
+        {/* Floating particles */}
+        <FloatingParticles />
 
         {/* Hero content */}
         <div className="relative px-6 py-16 md:py-24 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full border border-purple-500/30 mb-6">
-            <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
+          {/* Animated badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/20 rounded-full border border-purple-500/30 mb-6 hover:scale-105 transition-transform cursor-default animate-bounce-in">
+            <Sparkles size={14} className="text-purple-600 dark:text-purple-400 animate-pulse" />
             <span className="text-xs text-purple-600 dark:text-purple-300 font-medium">Learn Romanian Differently</span>
+            <Zap size={14} className="text-pink-500 animate-pulse" />
           </div>
 
           <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight">
-            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-400 dark:via-pink-400 dark:to-orange-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 dark:from-purple-400 dark:via-pink-400 dark:to-orange-400 bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
               Chaos
             </span>
             <span className="text-text-primary">Lingua</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-text-secondary mb-3 max-w-md mx-auto">
+          <p className="text-lg md:text-xl text-text-secondary mb-4 max-w-md mx-auto">
             Structured chaos for language learning
           </p>
 
-          <p className="text-text-muted italic text-sm max-w-sm mx-auto">
+          {/* Animated mantra */}
+          <p 
+            className={`text-text-muted italic text-sm max-w-sm mx-auto transition-all duration-300 ${
+              isMantraVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+            }`}
+          >
             "{currentMantra}"
           </p>
         </div>
@@ -81,7 +122,8 @@ export default function HomeView({ setCurrentView, stats }) {
 
       {/* Session Cards */}
       <div className="px-6 space-y-4 max-w-lg mx-auto">
-        <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider">
+        <h2 className="text-sm font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+          <Star size={14} className="text-warning" />
           Start Learning
         </h2>
 
@@ -90,8 +132,9 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Chaos Window"
           description="Random content, timed exploration"
           gradient="from-purple-600 to-indigo-700"
-          bgColor="#7c3aed"
+          glowColor="rgba(124, 58, 237, 0.4)"
           onClick={() => setCurrentView('chaos')}
+          delay={0}
         />
 
         <SessionCard
@@ -99,8 +142,9 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Error Garden"
           description="Guess first, learn from mistakes"
           gradient="from-rose-600 to-orange-600"
-          bgColor="#e11d48"
+          glowColor="rgba(225, 29, 72, 0.4)"
           onClick={() => setCurrentView('garden')}
+          delay={1}
         />
 
         <SessionCard
@@ -108,8 +152,9 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Fog Machine"
           description="Above-level immersion"
           gradient="from-teal-600 to-cyan-600"
-          bgColor="#0d9488"
+          glowColor="rgba(13, 148, 136, 0.4)"
           onClick={() => setCurrentView('fog')}
+          delay={2}
         />
 
         <SessionCard
@@ -117,15 +162,19 @@ export default function HomeView({ setCurrentView, stats }) {
           title="Word Forge"
           description="Build sentences, active production"
           gradient="from-amber-600 to-orange-600"
-          bgColor="#d97706"
+          glowColor="rgba(217, 119, 6, 0.4)"
           onClick={() => setCurrentView('forge')}
+          delay={3}
         />
       </div>
 
       {/* Philosophy Section */}
       <div className="px-6 py-10 max-w-lg mx-auto">
-        <div className="bg-bg-secondary rounded-2xl p-6 border border-border">
-          <h3 className="text-lg font-semibold text-text-primary mb-4">The Philosophy</h3>
+        <div className="bg-bg-secondary/80 backdrop-blur-sm rounded-2xl p-6 border border-border hover:border-accent/50 transition-colors duration-300">
+          <h3 className="text-lg font-semibold text-text-primary mb-4 flex items-center gap-2">
+            <Flame size={18} className="text-warning" />
+            The Philosophy
+          </h3>
           <div className="space-y-4 text-sm">
             <PhilosophyItem
               color="purple"
@@ -169,8 +218,11 @@ function StatCard({ value, label, color }) {
   };
 
   return (
-    <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 text-center border`}>
-      <div className={`text-2xl font-bold ${textClasses[color]}`}>
+    <div 
+      className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 text-center border
+        hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-default group`}
+    >
+      <div className={`text-2xl font-bold ${textClasses[color]} group-hover:scale-110 transition-transform`}>
         {value}
       </div>
       <div className="text-xs text-text-muted">{label}</div>
@@ -178,26 +230,49 @@ function StatCard({ value, label, color }) {
   );
 }
 
-function SessionCard({ icon: Icon, title, description, gradient, bgColor, onClick }) {
+function SessionCard({ icon: Icon, title, description, gradient, glowColor, onClick, delay = 0 }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <button
       onClick={onClick}
-      style={{ backgroundColor: bgColor }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={`w-full p-5 rounded-2xl bg-gradient-to-br ${gradient} text-left
-        hover:scale-[1.02] hover:shadow-xl transition-all duration-200
-        active:scale-[0.98] group`}
+        transform transition-all duration-300 ease-out
+        hover:scale-[1.02] hover:-translate-y-1
+        active:scale-[0.98] active:translate-y-0
+        group relative overflow-hidden`}
+      style={{
+        boxShadow: isHovered 
+          ? `0 20px 40px -15px ${glowColor}, 0 0 30px ${glowColor}`
+          : '0 4px 15px rgba(0, 0, 0, 0.1)',
+        animationDelay: `${delay * 0.1}s`,
+      }}
     >
-      <div className="flex items-center gap-4">
-        <div className="p-3 bg-white/10 rounded-xl">
-          <Icon size={24} className="text-white" />
+      {/* Animated shimmer overlay */}
+      <div 
+        className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent
+          transition-transform duration-700 ease-out ${isHovered ? 'translate-x-full' : '-translate-x-full'}`}
+      />
+      
+      {/* Content */}
+      <div className="relative flex items-center gap-4">
+        <div className={`p-3 bg-white/15 rounded-xl backdrop-blur-sm transition-all duration-300
+          ${isHovered ? 'scale-110 rotate-6 bg-white/25' : ''}`}
+        >
+          <Icon size={24} className={`text-white transition-transform duration-300 ${isHovered ? 'scale-110' : ''}`} />
         </div>
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            {title}
+            {isHovered && <Sparkles size={14} className="animate-pulse" />}
+          </h3>
           <p className="text-white/70 text-sm">{description}</p>
         </div>
         <ChevronRight
           size={20}
-          className="text-white/50 group-hover:text-white/80 group-hover:translate-x-1 transition-all"
+          className={`text-white/50 transition-all duration-300 ${isHovered ? 'text-white translate-x-1' : ''}`}
         />
       </div>
     </button>
@@ -211,11 +286,19 @@ function PhilosophyItem({ color, title, description }) {
     teal: 'text-teal-600 dark:text-teal-400',
     amber: 'text-amber-600 dark:text-amber-400',
   };
+  const bgClasses = {
+    purple: 'bg-purple-500/10',
+    rose: 'bg-rose-500/10',
+    teal: 'bg-teal-500/10',
+    amber: 'bg-amber-500/10',
+  };
 
   return (
-    <p className="text-text-secondary">
-      <span className={`font-medium ${colorClasses[color]}`}>{title}:</span>{' '}
-      {description}
-    </p>
+    <div className={`p-3 rounded-lg ${bgClasses[color]} hover:scale-[1.02] transition-transform cursor-default`}>
+      <p className="text-text-secondary">
+        <span className={`font-semibold ${colorClasses[color]}`}>{title}:</span>{' '}
+        {description}
+      </p>
+    </div>
   );
 }
