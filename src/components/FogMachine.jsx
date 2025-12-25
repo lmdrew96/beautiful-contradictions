@@ -220,6 +220,8 @@ export default function FogMachineView({ updateStats }) {
                 value={fogLevel}
                 onChange={(e) => setFogLevel(parseInt(e.target.value))}
                 className="w-full h-2 bg-bg-tertiary rounded-full appearance-none cursor-pointer
+                  [&::-webkit-slider-runnable-track]:bg-transparent
+                  [&::-webkit-slider-runnable-track]:rounded-full
                   [&::-webkit-slider-thumb]:appearance-none
                   [&::-webkit-slider-thumb]:w-6
                   [&::-webkit-slider-thumb]:h-6
@@ -228,7 +230,15 @@ export default function FogMachineView({ updateStats }) {
                   [&::-webkit-slider-thumb]:from-teal-400
                   [&::-webkit-slider-thumb]:to-cyan-500
                   [&::-webkit-slider-thumb]:shadow-lg
-                  [&::-webkit-slider-thumb]:cursor-pointer"
+                  [&::-webkit-slider-thumb]:cursor-pointer
+                  [&::-moz-range-track]:bg-transparent
+                  [&::-moz-range-thumb]:border-0
+                  [&::-moz-range-thumb]:w-6
+                  [&::-moz-range-thumb]:h-6
+                  [&::-moz-range-thumb]:rounded-full
+                  [&::-moz-range-thumb]:bg-gradient-to-br
+                  [&::-moz-range-thumb]:from-teal-400
+                  [&::-moz-range-thumb]:to-cyan-500"
               />
               {/* Gradient overlay */}
               <div
